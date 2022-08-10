@@ -29,15 +29,11 @@ $api->version('v1', [
     });
 
     $api->get('/test', 'TestController@test');
+    $api->post('/login', 'AuthController@login');
     /**
      * 无需登录的接口
      */
-    $api->get('/auth/oauth', 'AuthController@oauth');
-    $api->get('/auth/callback', 'AuthController@callback');
-    $api->post('/social/login', 'AuthController@loginBySocial')->name('api.auth.social_login');
-    $api->post('/mobile/login', 'AuthController@loginByMobile')->name('api.auth.mobile_login');
-    $api->post('/import', 'ImportController@import')->name('api.source.import');
-    $api->get('/system_configs', 'SystemConfigController@index')->name('api.configs.index');
+
 
 
 
@@ -47,22 +43,13 @@ $api->version('v1', [
      */
 
     $api->group([
-        'middleware' => ['auth.jwt']
+        // 'middleware' => ['auth.jwt']
+
     ], function ($api) {
-        $api->get('/info', 'UserController@info')->name('api.user.info');
-        $api->post('/shares', 'ShareController@store')->name('api.shares.store');
-        $api->patch('/share_code', 'UserController@bindShareCode')->name('api.user.share_code');
+        $api->get('/user/info', 'UserController@info')->name('api.user.info');
 
-
-        $api->post('/collects', 'UserCollectController@store')->name('api.collects.store'); //收藏
-        $api->post('/dis_collects', 'UserCollectController@disCollect')->name('api.collects.destroy'); //取消收藏
-
-        $api->post('/play', 'UserPlayRecordController@store')->name('api.user_play_record.store'); //播放资源
-
-        $api->get('/index', 'IndexController@index')->name('api.index.index'); //首页
-
-
-        $api->get('/channels', 'ChannelController@index')->name('api.channels.index'); //频道列表
-        $api->get('/channels/{channel}', 'ChannelController@detail')->name('api.channels.detail'); //频道详情
+        $api->get('/categories', 'CategoryController@list')->name('api.categories.list');
+        $api->post('/categories', 'CategoryController@store')->name('api.categories.store');
+        $api->delete('/categories/{category}', 'CategoryController@delete')->name('api.categories.delete');
     });
 });

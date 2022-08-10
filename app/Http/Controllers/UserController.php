@@ -11,10 +11,14 @@ class UserController extends Controller
 {
     public function  info(UserTransformer $userTransformer)
     {
-        $info = auth('api')->user();
-        $userTransformer->setDefaultIncludes(['friends', 'user_account']);
-        $system = SystemConfig::whereIn('name', ['system_group', 'system_pay'])->select('name', 'value', 'expired_at')->get();
-        return $this->response()->item($info, $userTransformer)->setMeta(['system' => $system->toArray()]);
+        //     $info = auth('api')->user();
+        //     $userTransformer->setDefaultIncludes(['friends', 'user_account']);
+        //     $system = SystemConfig::whereIn('name', ['system_group', 'system_pay'])->select('name', 'value', 'expired_at')->get();
+        //     return $this->response()->item($info, $userTransformer)->setMeta(['system' => $system->toArray()]);
+        return $this->response()->array([
+            "code" => 20000,
+            "data" => "info",
+        ]);
     }
 
     public function bindShareCode(Request $request, UserService $userService, UserTransformer $userTransformer)

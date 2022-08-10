@@ -100,16 +100,19 @@ if (!function_exists('decryptUrl')) {
 
 
 if (!function_exists('makeTree')) {
-    function makeTree($parent_id, $data)
+    function makeTree($data, $node_id)
     {
         $tree = [];
-        foreach ($data as  $k => $item) {
-            if ($item->parent_id == $parent_id) {
-                $children = makeTree($item->id, $tree);
-                $item['children'] = $children;
-                $tree[] = $item;
+        foreach ($data as  &$item) {
+            $parent_id = $item['parent_id'];
+            if (isset($data[$parent_id])) {
+                $tmp = &$data[$parent_id];
+            } else {
+                $tmp = ['children' => []];
             }
+            $tree[$parent_id] = &$tmp;
+            $tree[$parent_id]['children'][] = &$item;
         }
-        return $tree;
+        return $tree[$node_id]['children'];
     }
 }
