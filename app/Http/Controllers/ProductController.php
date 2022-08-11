@@ -5,21 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class ProductController extends Controller
 {
     public function list()
     {
-        $categories = [];
 
-        Category::withCount('children')->inRandomOrder()->get()->map(function ($item) use (&$categories) {
-            $tmp = $item->toArray();
-            $tmp['children'] = [];
-            $categories[$item->id] = $tmp;
-        });
-        $tree = [];
-        if ($categories) {
-            $tree =  makeTree($categories, 0);
-        }
+
         return $this->response->array(['tree' => $tree, 'code' => 20000]);
     }
 

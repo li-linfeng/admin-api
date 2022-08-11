@@ -106,11 +106,10 @@ if (!function_exists('makeTree')) {
         foreach ($data as  &$item) {
             $parent_id = $item['parent_id'];
             if (isset($data[$parent_id])) {
-                $tmp = &$data[$parent_id];
+                $tree[$parent_id] = &$data[$parent_id];
             } else {
-                $tmp = ['children' => []];
+                $tree[$parent_id] = ['children' => []];
             }
-            $tree[$parent_id] = &$tmp;
             $tree[$parent_id]['children'][] = &$item;
         }
         return $tree[$node_id]['children'];
