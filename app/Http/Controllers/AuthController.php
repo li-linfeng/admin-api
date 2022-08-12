@@ -9,9 +9,7 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-
         return $this->response()->array([
-            "code" => 20000,
             "data" => "asdasdasd",
         ]);
     }

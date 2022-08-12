@@ -16,7 +16,6 @@ class UserController extends Controller
         //     $system = SystemConfig::whereIn('name', ['system_group', 'system_pay'])->select('name', 'value', 'expired_at')->get();
         //     return $this->response()->item($info, $userTransformer)->setMeta(['system' => $system->toArray()]);
         return $this->response()->array([
-            "code" => 20000,
             "data" => "info",
         ]);
     }

@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
+
+use App\Response\FormatResponse;
+use Dingo\Api\Event\ResponseWasMorphed;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,6 +19,10 @@ class EventServiceProvider extends ServiceProvider
 
         'Illuminate\Database\Events\QueryExecuted'            => [
             'App\Listeners\QueryListener',
+        ],
+        // 监听 Dingo API发送响应之前对响应进行转化的事件
+        ResponseWasMorphed::class => [
+            FormatResponse::class
         ],
     ];
 

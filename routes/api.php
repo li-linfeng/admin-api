@@ -51,5 +51,11 @@ $api->version('v1', [
         $api->get('/categories', 'CategoryController@list')->name('api.categories.list');
         $api->post('/categories', 'CategoryController@store')->name('api.categories.store');
         $api->delete('/categories/{category}', 'CategoryController@delete')->name('api.categories.delete');
+
+
+        $api->get('/projects', 'ProjectController@list')->name('api.projects.list');
+        $api->post('/projects', 'ProjectController@store')->name('api.projects.store');
+        $api->patch('/projects/{project}/status', 'ProjectController@status')->name('api.projects.status');
+        $api->delete('/projects/{project}', 'ProjectController@delete')->name('api.projects.delete');
     });
 });

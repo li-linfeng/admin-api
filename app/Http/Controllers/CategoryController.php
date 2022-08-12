@@ -20,7 +20,7 @@ class CategoryController extends Controller
         if ($categories) {
             $tree =  makeTree($categories, 0);
         }
-        return $this->response->array(['tree' => $tree, 'code' => 20000]);
+        return $this->response->array($tree);
     }
 
 
@@ -32,10 +32,7 @@ class CategoryController extends Controller
             'has_child' => $request->has_child,
         ];
         $category = Category::create($data);
-        return $this->response()->array([
-            'data' => $category->toArray(),
-            'code' => 20000
-        ]);
+        return $this->response->array($category->toArray());
     }
 
 
@@ -43,9 +40,6 @@ class CategoryController extends Controller
     {
         Category::where('parent_id', $category->id)->delete();
         $category->delete();
-        return $this->response()->array([
-            'data' => [],
-            'code' => 20000
-        ]);
+        return $this->response->noContent();
     }
 }
