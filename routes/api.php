@@ -43,7 +43,7 @@ $api->version('v1', [
      */
 
     $api->group([
-        // 'middleware' => ['auth.jwt']
+        'middleware' => ['auth.jwt']
 
     ], function ($api) {
         $api->get('/user/info', 'UserController@info')->name('api.user.info');
@@ -57,5 +57,14 @@ $api->version('v1', [
         $api->post('/projects', 'ProjectController@store')->name('api.projects.store');
         $api->patch('/projects/{project}/status', 'ProjectController@status')->name('api.projects.status');
         $api->delete('/projects/{project}', 'ProjectController@delete')->name('api.projects.delete');
+
+
+
+        $api->get('/sale_requests', 'SaleRequestController@list')->name('api.sale_requests.list');
+        $api->post('/sale_requests', 'SaleRequestController@store')->name('api.sale_requests.store');
+        $api->put('/sale_requests/{request}', 'SaleRequestController@update')->name('api.sale_requests.update');
+        $api->delete('/sale_requests/{request}', 'SaleRequestController@delete')->name('api.sale_requests.delete');
+
+        $api->post('/upload', 'UploadController@upload')->name('api.upload.upload');
     });
 });

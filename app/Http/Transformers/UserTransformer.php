@@ -14,9 +14,9 @@ class UserTransformer extends BaseTransformer
     public function transform(User $user)
     {
         return [
-            'id'    => $user->id,
-            'name'  => $user->nickname,
-            'email' => $user->email,
+            'id'       => $user->id,
+            'username' => $user->username,
+            'email'    => $user->email,
         ];
     }
 }

@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Imports\ResourceImport;
+use App\Services\AuthService;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(AuthService $authService)
     {
-        return $this->response()->array([
-            "data" => "asdasdasd",
-        ]);
+        $token = $authService->login();
+
+        return  $this->response()->array($token);
     }
 }

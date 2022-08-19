@@ -24,7 +24,7 @@ class AdminUserFactory extends Factory
         return [
             'nickname' => 'admin',
             'email' => $this->faker->unique()->safeEmail(),
-            'password' => bcrypt("muse123456"),
+            'password' => bcrypt("123456"),
         ];
     }
 }
