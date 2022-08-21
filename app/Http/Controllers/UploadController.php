@@ -21,6 +21,8 @@ class UploadController extends Controller
             'path' => $path,
             'filename' => $request->file('file')->getClientOriginalName(),
         ]);
-        return $this->response()->array($file->toArray());
+        $data = $file->toArray();
+        $data['name'] = $data['filename'];
+        return $this->response()->array($data);
     }
 }

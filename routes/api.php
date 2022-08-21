@@ -61,6 +61,7 @@ $api->version('v1', [
 
 
         $api->get('/sale_requests', 'SaleRequestController@list')->name('api.sale_requests.list');
+        $api->get('/sale_request_num', 'SaleRequestController@getUniqueId')->name('api.sale_requests.uuid');
         $api->post('/sale_requests', 'SaleRequestController@store')->name('api.sale_requests.store');
         $api->put('/sale_requests/{request}', 'SaleRequestController@update')->name('api.sale_requests.update');
         $api->delete('/sale_requests/{request}', 'SaleRequestController@delete')->name('api.sale_requests.delete');

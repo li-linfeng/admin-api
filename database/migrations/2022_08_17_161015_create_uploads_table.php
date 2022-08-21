@@ -18,6 +18,8 @@ class CreateUploadsTable extends Migration
             $table->string("type")->default("image")->comment("文件类型,image, file");
             $table->string("path")->default("")->comment("文件路径");
             $table->string("filename")->default("")->comment("文件名");
+            $table->string("source_type")->default("sale_request")->comment("所属资源类型");
+            $table->integer("source_id")->default(0)->comment("所属资源id");
             $table->timestamps();
         });
     }

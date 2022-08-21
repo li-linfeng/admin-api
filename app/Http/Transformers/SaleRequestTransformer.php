@@ -26,6 +26,7 @@ class SaleRequestTransformer extends BaseTransformer
             'shaft_two_diameter_tolerance' => $saleRequest->shaft_two_diameter_tolerance,
             'shaft_one_match_distance'     => $saleRequest->shaft_one_match_distance,
             'shaft_two_match_distance'     => $saleRequest->shaft_two_match_distance,
+            'shaft_space_distance'         => $saleRequest->shaft_space_distance,
             'upload_id'                    => $saleRequest->upload_id,
             'remark'                       => $saleRequest->remark,
             'upload_url'                   => optional($saleRequest->upload)->url,

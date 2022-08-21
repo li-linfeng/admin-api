@@ -11,7 +11,6 @@ class SaleRequestController extends Controller
 {
     public function getUniqueId()
     {
-
         return $this->response()->array([
             'uuid' => date("Ymd") . uniqid()
         ]);

@@ -29,7 +29,7 @@ class CreateSaleRequestsTable extends Migration
             $table->string("shaft_two_match_distance")->default("")->comment("轴2配合段长度");
             $table->string("shaft_space_distance")->default("")->comment("轴端面间距");
             $table->string("status")->default("open")->comment("状态");
-            $table->integer("upload_id")->default(0)->comment("附件");
+            $table->string("upload_ids")->default("")->comment("附件ids");
             $table->text("remark")->comment("备注");
             $table->integer("user_id")->comment("所属用户id");
             $table->timestamps();

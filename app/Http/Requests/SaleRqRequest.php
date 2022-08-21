@@ -36,7 +36,7 @@ class SaleRqRequest extends FormRequest
             'shaft_two_diameter_tolerance',
             'shaft_one_match_distance',
             'shaft_two_match_distance',
-            'upload_id',
+            'upload_ids',
             'remark',
         ];
     }
