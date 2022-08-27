@@ -10,7 +10,6 @@ class FormatResponse
     public function handle(ResponseWasMorphed $event)
     {
         $statusCode = $event->response->getStatusCode();
-
         if ($statusCode == 200) {
             // 取dingo配置文件内的异常时响应格式字段，确保整个响应数据格式一致
             $errorFormat = config('api.errorFormat');

@@ -7,7 +7,7 @@ use App\Models\SaleRequest;
 class SaleRequestTransformer extends BaseTransformer
 {
 
-    protected $availableIncludes = [];
+    protected $availableIncludes = ['uploads'];
 
 
     public function transform(SaleRequest $saleRequest)
@@ -27,13 +27,24 @@ class SaleRequestTransformer extends BaseTransformer
             'shaft_one_match_distance'     => $saleRequest->shaft_one_match_distance,
             'shaft_two_match_distance'     => $saleRequest->shaft_two_match_distance,
             'shaft_space_distance'         => $saleRequest->shaft_space_distance,
-            'upload_id'                    => $saleRequest->upload_id,
+            'upload_ids'                   => $saleRequest->upload_ids,
             'remark'                       => $saleRequest->remark,
-            'upload_url'                   => optional($saleRequest->upload)->url,
-            'upload_filename'              => optional($saleRequest->upload)->filename,
             'status'                       => $saleRequest->status,
+            'handle_user_id'               => $saleRequest->handle_user_id,
+            'leader_id'                    => $saleRequest->leader_id,
+            'can_dispatch'                 => $saleRequest->handle_user_id ? false : true,
             'status_cn'                    => $saleRequest->status_cn,
             'created_at'                   => $saleRequest->created_at->toDateTimeString(),
+            'user_id'                      => $saleRequest->user_id,
         ];
+    }
+
+
+    public function includeUploads(SaleRequest $saleRequest)
+    {
+        if ($saleRequest->uploads->isEmpty()) {
+            return $this->null();
+        }
+        return $this->collection($saleRequest->uploads, new UploadTransformer(), 'flatten');
     }
 }

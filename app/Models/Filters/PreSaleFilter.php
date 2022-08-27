@@ -3,7 +3,7 @@
 namespace App\Models\Filters;
 
 
-trait SaleRequestFilter
+trait PreSaleFilter
 {
     use BaseFilter;
 
@@ -17,6 +17,7 @@ trait SaleRequestFilter
 
         return $this->builder->where($keyword[0], 'like', "%$keyword[1]%");
     }
+
 
     public function filterStatus($status = '')
     {

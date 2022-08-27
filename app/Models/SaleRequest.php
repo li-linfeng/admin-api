@@ -24,10 +24,12 @@ class SaleRequest extends Model
         'shaft_one_match_distance',
         'shaft_two_match_distance',
         'shaft_space_distance',
-        'upload_id',
+        'upload_ids',
         'remark',
         'user_id',
         'sale_num',
+        'leader_id',
+        'handle_user_id',
     ];
     protected $statusArr = [
         "open"   => "新建",
@@ -36,9 +38,9 @@ class SaleRequest extends Model
         "cancel" => "取消",
     ];
 
-    public function upload()
+    public function uploads()
     {
-        return $this->hasOne(Upload::class, 'id', 'upload_id');
+        return $this->hasMany(Upload::class, 'source_id', 'id')->where('source_type', 'sale_request');
     }
 
     public function getStatusCnAttribute()

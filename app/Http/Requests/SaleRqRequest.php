@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 
 class SaleRqRequest extends FormRequest
 {
@@ -24,20 +23,34 @@ class SaleRqRequest extends FormRequest
     public function rules()
     {
         return [
-            'seq_num',
-            'product_type',
-            'customer_type',
-            'device_name',
-            'driver_type',
-            'driver_power',
-            'rpm',
-            'torque',
-            'shaft_one_diameter_tolerance',
-            'shaft_two_diameter_tolerance',
-            'shaft_one_match_distance',
-            'shaft_two_match_distance',
-            'upload_ids',
-            'remark',
+            'seq_num'       => 'required',
+            'product_type'  => 'required',
+            'customer_type' => 'required',
+            'device_name'   => 'required',
+            'driver_type'   => 'required',
+            'driver_power'  => 'required',
+            'rpm'           => 'required',
+            'torque'        => 'required',
+            // 'shaft_one_diameter_tolerance',
+            // 'shaft_two_diameter_tolerance',
+            // 'shaft_one_match_distance',
+            // 'shaft_two_match_distance',
+            // 'upload_ids',
+            // 'remark',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'seq_num.required'       => '需求编号不能为空',
+            'product_type.required'  => '商品类型不能为空',
+            'customer_type.required' => '客户性质不能为空',
+            'device_name.required'   => '设备名称不能为空',
+            'driver_type.required'   => '驱动类型不能为空',
+            'driver_power.required'  => '驱动功率不能为空',
+            'rpm.required'           => '转速不能为空',
+            'torque.required'        => '力矩不能为空',
         ];
     }
 }

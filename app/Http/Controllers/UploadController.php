@@ -17,9 +17,10 @@ class UploadController extends Controller
         );
 
         $file = Upload::create([
-            'type' =>  $request->type,
-            'path' => $path,
-            'filename' => $request->file('file')->getClientOriginalName(),
+            'type'        => $request->type,
+            'source_type' => $request->source_type,
+            'path'        => $path,
+            'filename'    => $request->file('file')->getClientOriginalName(),
         ]);
         $data = $file->toArray();
         $data['name'] = $data['filename'];

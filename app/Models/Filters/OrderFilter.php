@@ -3,27 +3,25 @@
 namespace App\Models\Filters;
 
 
-trait SaleRequestFilter
+trait OrderFilter
 {
     use BaseFilter;
 
     // 类型
-    public function filterKeyWord($keyword = [])
+    public function filterName($name = '')
     {
-        $arr = array_filter($keyword);
-        if (count($arr) != 2) {
+        if (!$name) {
             return;
         }
-
-        return $this->builder->where($keyword[0], 'like', "%$keyword[1]%");
+        return $this->builder->where('name', "like", "%{$name}%");
     }
 
+    // 类型
     public function filterStatus($status = '')
     {
         if (!$status) {
             return;
         }
-
         return $this->builder->where('status', $status);
     }
 }

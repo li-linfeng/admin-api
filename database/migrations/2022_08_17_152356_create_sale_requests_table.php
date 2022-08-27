@@ -32,6 +32,8 @@ class CreateSaleRequestsTable extends Migration
             $table->string("upload_ids")->default("")->comment("附件ids");
             $table->text("remark")->comment("备注");
             $table->integer("user_id")->comment("所属用户id");
+            $table->integer("handle_user_id")->comment("负责此需求的工程师id");
+            $table->integer("leader_id")->comment("负责此产品的领导id");
             $table->timestamps();
         });
     }

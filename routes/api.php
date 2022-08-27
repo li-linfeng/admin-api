@@ -65,6 +65,15 @@ $api->version('v1', [
         $api->post('/sale_requests', 'SaleRequestController@store')->name('api.sale_requests.store');
         $api->put('/sale_requests/{request}', 'SaleRequestController@update')->name('api.sale_requests.update');
         $api->delete('/sale_requests/{request}', 'SaleRequestController@delete')->name('api.sale_requests.delete');
+        $api->post('/sale_requests/{request}/handle_user', 'SaleRequestController@dispatchHandler')->name('api.sale_requests.handle_user');
+
+
+        $api->get('/preSales', 'PreSaleController@list')->name('api.preSales.list');
+        $api->put('/preSales/{request}', 'PreSaleController@update')->name('api.preSales.update');
+
+        $api->get('/order_num', 'OrderController@getOrderNum')->name('api.order.order_num');
+        $api->post('/orders', 'OrderController@store')->name('api.order.store');
+        $api->get('/orders', 'OrderController@list')->name('api.order.list');
 
         $api->post('/upload', 'UploadController@upload')->name('api.upload.upload');
     });

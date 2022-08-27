@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Exception;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,10 +18,21 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
 
-        //表单验证错误抛出 422
-        \API::error(function (\Dingo\Api\Exception\ValidationHttpException $exception) {
-            $errors = $exception->getErrors();
-            return response()->json(['message' => $errors->first(), 'status_code' => 422], 422);
+
+        app('Dingo\Api\Exception\Handler')->register(function (\Exception $e) {
+            // dd($e);
+            if ($e instanceof \Dingo\Api\Exception\ValidationHttpException) {
+                throw new HttpException(422, $e->getErrors()->first());
+            }
+
+            if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+                if ($e->getPrevious()) {
+                    $model = $e->getPrevious()->getModel();
+                    $modelName = app($model)->modelName ?: '資源';
+                    $message = '找不到該' . $modelName;
+                    throw new HttpException(404, $message);
+                }
+            }
         });
     }
 
