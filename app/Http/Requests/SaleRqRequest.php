@@ -23,7 +23,7 @@ class SaleRqRequest extends FormRequest
     public function rules()
     {
         return [
-            'seq_num'       => 'required',
+            'sale_num'      => 'required',
             'product_type'  => 'required',
             'customer_type' => 'required',
             'device_name'   => 'required',
@@ -43,7 +43,7 @@ class SaleRqRequest extends FormRequest
     public function messages()
     {
         return [
-            'seq_num.required'       => '需求编号不能为空',
+            'sale_num.required'       => '需求编号不能为空',
             'product_type.required'  => '商品类型不能为空',
             'customer_type.required' => '客户性质不能为空',
             'device_name.required'   => '设备名称不能为空',
