@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-
+use Illuminate\Routing\Route;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
         });
+
+        $this->registerRouteMacros();
     }
 
     /**
@@ -51,5 +53,35 @@ class AppServiceProvider extends ServiceProvider
 
     protected function registerObservers()
     {
+    }
+
+
+    //注册理由方法
+    public function registerRouteMacros()
+    {
+        if (!Route::hasMacro('menu')) {
+            Route::macro('menu', function ($name) {
+                $this->action['menu'] = $name;
+                return $this;
+            });
+        }
+
+        if (!Route::hasMacro('getMenu')) {
+            Route::macro('getMenu', function () {
+                return $this->action['menu'] ?? '';
+            });
+        }
+
+        if (!Route::hasMacro('permissions')) {
+            Route::macro('permissions', function ($name) {
+                $this->action['permissions'] = $name;
+                return $this;
+            });
+        }
+        if (!Route::hasMacro('getPermission')) {
+            Route::macro('getPermission', function () {
+                return $this->action['permissions'] ?? '';
+            });
+        }
     }
 }

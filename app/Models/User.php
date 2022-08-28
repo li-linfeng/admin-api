@@ -42,9 +42,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return [
-            'role' => 'user'
-        ];
+        return [];
     }
 
 
@@ -52,5 +50,10 @@ class User extends Authenticatable implements JWTSubject
     public function avatar()
     {
         return $this->hasOne(Image::class, 'id', 'avatar_id');
+    }
+
+    public function roles()
+    {
+        return $this->hasManyThrough(Role::class, UserRoleRel::class);
     }
 }
