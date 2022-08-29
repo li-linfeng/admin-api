@@ -11,11 +11,9 @@ class Role extends Model
     use HasFactory;
 
     protected $guarded = [];
-s
     //项目创建人
     public function permissions()
     {
         return $this->hasMany(RolePermissionRel::class, "role_id", "id");
     }
-
 }

@@ -35,12 +35,11 @@ trait RoleHelper
 
                     if (!isset($versionNameKeyedRoutes[$menu[0]])) {
                         $value                            = substr($name, 0, strripos($name, "."));
-                        $versionNameKeyedRoutes[$menu[0]] = ['name' => $menu[0], 'value' => $value];
+                        $versionNameKeyedRoutes[$menu[0]] = ['label' => $menu[0], 'value' => $value];
                     }
 
                     $versionNameKeyedRoutes[$menu[0]]['children'][] = [
-                        'name'  => $menu[1],
-                        // 'value' => $type == 'menu' ? $name : substr($name, strripos($name, ".") + 1),
+                        'label'  => $menu[1],
                         'value' => $name,
                     ];
                 });
