@@ -14,7 +14,7 @@ class PermissionTransformer extends BaseTransformer
         return [
             'id'         => $permission->id,
             'role_id'    => $permission->role_id,
-            'permission' => $permission->name,
+            'permission' => $permission->permission,
         ];
     }
 }

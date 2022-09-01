@@ -54,6 +54,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function roles()
     {
-        return $this->hasManyThrough(Role::class, UserRoleRel::class);
+        return $this->hasManyThrough(Role::class, UserRoleRel::class, 'user_id', 'id', 'id', 'role_id');
     }
 }

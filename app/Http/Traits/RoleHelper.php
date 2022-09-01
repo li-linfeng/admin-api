@@ -20,19 +20,15 @@ trait RoleHelper
         $versionNameKeyedRoutes = [];
 
         foreach ($apiRoutes as $version => $routesCollection) {
-
             $versionRoutes = collect($routesCollection->getRoutes());
-
             $versionRoutes
                 ->filter(function ($route) use ($type) {
                     $menu = $type == 'menu' ? $route->getMenu() : $route->getPermission();
                     return $menu;
                 })
                 ->map(function ($route, $key) use ($version, &$versionNameKeyedRoutes, $type) {
-
                     $menu = explode(':', $type == 'menu' ? $route->getMenu() : $route->getPermission());
                     $name = $route->getName();
-
                     if (!isset($versionNameKeyedRoutes[$menu[0]])) {
                         $value                            = substr($name, 0, strripos($name, "."));
                         $versionNameKeyedRoutes[$menu[0]] = ['label' => $menu[0], 'value' => $value];
@@ -48,7 +44,7 @@ trait RoleHelper
 
         if ($type == 'all') {
             $apiNameKeyedRoutes->prepend([
-                'name'  => '超級權限',
+                'label'  => '超級權限',
                 'value' => '*',
             ]);
         }

@@ -44,6 +44,7 @@ $api->version('v1', [
 
     ], function ($api) {
         $api->get('/user/info', 'UserController@info')->name('api.user.info')->permissions('用户信息:用户信息');
+        $api->get('/user_permissions', 'UserController@getUserPermissions')->name('api.user.user_permission')->permissions('用户信息:用户权限');
 
         $api->get('/categories', 'CategoryController@list')->name('api.categories.list')->permissions("分类管理:分类列表");
         $api->post('/categories', 'CategoryController@store')->name('api.categories.store')->permissions("分类管理:新增分类");
@@ -76,13 +77,14 @@ $api->version('v1', [
 
         $api->get('roles', 'RolesController@index')->name('api.roles.index')->permissions("角色管理:角色列表");
         $api->post('roles', 'RolesController@store')->name('api.roles.store')->permissions("角色管理:新增角色");
-        $api->delete('roles/{role}', 'RolesController@delete')->name('api.roles.index')->permissions("角色管理:删除角色");
-        $api->post('roles/{role}/assign', 'RolesController@assignPermission')->name('api.roles.assign')->permissions("角色管理:分配权限");
+        $api->delete('roles/{role}', 'RolesController@delete')->name('api.roles.delete')->permissions("角色管理:删除角色");
+        $api->put('roles/{role}', 'RolesController@update')->name('api.roles.update')->permissions("角色管理:分配权限");
+
         $api->get('permissions', 'RolesController@allPermissions')->name('api.roles.permissions')->permissions("角色管理:权限列表");
 
         $api->get('users', 'UserController@index')->name('api.users.index')->permissions("用户管理:用户列表");
         $api->post('users', 'UserController@store')->name('api.users.store')->permissions("用户管理:新增用户");
-        $api->post('users/{role}/assign', 'UserController@assignPermission')->name('api.users.assign')->permissions("用户管理:分配角色");
-        $api->delete('users/{role}', 'UserController@delete')->name('api.users.delete')->permissions("用户管理:删除用户");
+        $api->put('users/{user}', 'UserController@update')->name('api.users.update')->permissions("用户管理:編輯用戶");
+        $api->delete('users/{user}', 'UserController@delete')->name('api.users.delete')->permissions("用户管理:删除用户");
     });
 });

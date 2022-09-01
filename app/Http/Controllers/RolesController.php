@@ -8,6 +8,7 @@ use App\Http\Transformers\RoleTransformer;
 use App\Models\Role;
 use App\Models\RolePermissionRel;
 use App\Models\UserRoleRel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class RolesController extends Controller
@@ -17,8 +18,8 @@ class RolesController extends Controller
 
     public function index(Request $request, RoleTransformer $roleTransformer)
     {
-        $roles = Role::with(['permissions'])->paginate($request->input('per_page', 10));
-        return $this->response()->paginator($roles, $roleTransformer, [], function ($resource, $fractal) {
+        $roles = Role::with(['permissions'])->get();
+        return $this->response()->collection($roles, $roleTransformer, [], function ($resource, $fractal) {
             $fractal->parseIncludes(['permissions']);
         });
     }
@@ -26,13 +27,23 @@ class RolesController extends Controller
 
     public function store(Request $request)
     {
-        $roles = Role::create(['name' => $request->name]);
+        $role =  Role::create(['name' => $request->name]);
+        $data = [];
+        $permissions = $request->permissions;
+        foreach ($permissions as $permission) {
+            $data[] = [
+                'role_id'    => $role->id,
+                'permission' => $permission['value'],
+                'created_at' => Carbon::now()->toDateTimeString(),
+                'updated_at' => Carbon::now()->toDateTimeString()
+            ];
+        }
+        RolePermissionRel::insert($data);
         return $this->response()->noContent();
     }
 
     public function delete(Request $request, Role $role)
     {
-
         RolePermissionRel::where('role_id', $role->id)->delete();
         UserRoleRel::where('role_id', $role->id)->delete();
         $role->delete();
@@ -47,18 +58,21 @@ class RolesController extends Controller
         return $this->response()->array($menus);
     }
 
-    public function assignPermission(Request $request)
+    public function update(Role $role, Request $request)
     {
-        $role = $request->role;
+        $role->update(['name' => $request->name]);
         $data = [];
-        foreach ($request->permissions as $permission) {
+        $permissions = $request->permissions;
+        foreach ($permissions as $permission) {
             $data[] = [
-                'role_id' => $role,
-                'permission' => $permission,
+                'role_id'    => $role->id,
+                'permission' => $permission['value'],
+                'created_at' => Carbon::now()->toDateTimeString(),
+                'updated_at' => Carbon::now()->toDateTimeString()
             ];
         }
-        RolePermissionRel::where('role_id', $role)->delete();
-        RolePermissionRel::create($data);
+        RolePermissionRel::where('role_id', $role->id)->delete();
+        RolePermissionRel::insert($data);
         return $this->response()->noContent();
     }
 }
