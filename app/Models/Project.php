@@ -15,11 +15,15 @@ class Project extends Model
         "status" => "continue",
     ];
 
+    protected $casts = [
+        'project_time' => 'array',
+    ];
+
 
     protected $statusMap = [
         "continue" => "进行中",
-        "cancel"   => "已终止",
-        "finish"   => "已完成",
+        "cancel"   => "关闭丢单",
+        "finish"   => "关闭拿单",
     ];
 
     //项目创建人
@@ -33,5 +37,10 @@ class Project extends Model
     protected function getStatusCnAttribute()
     {
         return $this->statusMap[$this->status];
+    }
+
+    protected function getProjectDurationAttribute()
+    {
+        return $this->project_time ? implode(" 至 ", $this->project_time) : "--";
     }
 }

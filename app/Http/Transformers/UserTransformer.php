@@ -11,17 +11,11 @@ class UserTransformer extends BaseTransformer
 
     public function transform(User $user)
     {
-        $route = request()->route()->getName();
-        switch ($route) {
-            case "api.user.info":
-
-            default:
-                return [
-                    'id'       => $user->id,
-                    'username' => $user->username,
-                    'email'    => $user->email,
-                ];
-        }
+        return [
+            'id'       => $user->id,
+            'username' => $user->username,
+            'email'    => $user->email,
+        ];
     }
 
     public function includeRoles(User $user)

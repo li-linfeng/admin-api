@@ -12,12 +12,17 @@ class ProjectTransformer extends BaseTransformer
     public function transform(Project $project)
     {
         return [
-            'id'          => $project->id,
-            'name'        => $project->name,
-            'description' => $project->description,
-            'status'      => $project->status,
-            'status_cn'   => $project->status_cn,
-            'created_at'  => $project->created_at->toDateTimeString(),
+            'id'               => $project->id,
+            'name'             => $project->name,
+            'customer_name'    => $project->customer_name,
+            'product_name'     => $project->product_name,
+            'project_time'     => $project->project_time,
+            'project_duration' => $project->project_duration,
+            'cost'             => $project->cost,
+            'status'           => $project->status,
+            'status_cn'        => $project->status_cn,
+            'created_at'       => $project->created_at->toDateTimeString(),
+            'close_reason'     =>  $project->close_reason
         ];
     }
 
