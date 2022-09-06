@@ -8,14 +8,12 @@ trait SaleRequestFilter
     use BaseFilter;
 
     // 类型
-    public function filterKeyWord($keyword = [])
+    public function filterKeyword($data)
     {
-        $arr = array_filter($keyword);
-        if (count($arr) != 2) {
+        if (!$data || !$data['filter_col'] || !$data['filter_val']) {
             return;
         }
-
-        return $this->builder->where($keyword[0], 'like', "%$keyword[1]%");
+        return $this->builder->where($data['filter_col'], "like", "%{$data['filter_val']}%");
     }
 
     public function filterStatus($status = '')

@@ -7,7 +7,7 @@ use App\Models\SaleRequest;
 class SaleRequestTransformer extends BaseTransformer
 {
 
-    protected $availableIncludes = ['uploads'];
+    protected $availableIncludes = ['uploads', 'user', 'handler'];
 
 
     public function transform(SaleRequest $saleRequest)
@@ -30,12 +30,11 @@ class SaleRequestTransformer extends BaseTransformer
             'upload_ids'                   => $saleRequest->upload_ids,
             'remark'                       => $saleRequest->remark,
             'status'                       => $saleRequest->status,
-            'handle_user_id'               => $saleRequest->handle_user_id,
-            'leader_id'                    => $saleRequest->leader_id,
-            'can_dispatch'                 => $saleRequest->handle_user_id ? false : true,
             'status_cn'                    => $saleRequest->status_cn,
             'created_at'                   => $saleRequest->created_at->toDateTimeString(),
             'user_id'                      => $saleRequest->user_id,
+            'expect_time'                  => $saleRequest->expect_time,
+            'project_id'                   => $saleRequest->project_id,
         ];
     }
 
@@ -46,5 +45,22 @@ class SaleRequestTransformer extends BaseTransformer
             return $this->null();
         }
         return $this->collection($saleRequest->uploads, new UploadTransformer(), 'flatten');
+    }
+
+
+    public function includeUser(SaleRequest $saleRequest)
+    {
+        if (!$saleRequest->user) {
+            return $this->nullObject();
+        }
+        return $this->item($saleRequest->user, new UserTransformer());
+    }
+
+    public function includeHandler(SaleRequest $saleRequest)
+    {
+        if (!$saleRequest->handler) {
+            return $this->nullObject();
+        }
+        return $this->item($saleRequest->handler, new UserTransformer());
     }
 }

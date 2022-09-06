@@ -20,10 +20,9 @@ class CreatePreSaleRequestsTable extends Migration
             $table->string('product_price')->default("")->comment("产品价格");
             $table->string('pre_pay')->default("")->comment("预付款金额");
             $table->string('product_date')->default("")->comment("产品货期");
-            $table->string('upload_ids')->default("")->comment("附件");
             $table->text('remark')->nullable()->comment("备注");
             $table->integer('user_id')->default(0)->comment("处理工程师id");
-            $table->string('status')->default("open")->comment("状态， open, finish");
+            $table->string('status')->default("open")->comment("状态， published, return, finish");
             $table->integer('order_id')->default(0)->comment("关联的订单id");
             $table->integer('need_num')->default(0)->comment("需要的数量");
             $table->timestamps();

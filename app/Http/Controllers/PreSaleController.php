@@ -4,26 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Http\Transformers\PreSaleRequestTransformer;
 use App\Models\PreSaleRequest;
+use App\Models\SaleRequest;
 use App\Models\Upload;
 use Illuminate\Http\Request;
 
 class PreSaleController extends Controller
 {
     //
-    public function update(PreSaleRequest $request)
+    public function update(PreSaleRequest $request, Request $req)
     {
         $params = app('request')->only([
             'product_type',
             'product_price',
             'pre_pay',
             'product_date',
-            'upload_ids',
             'remark'
         ]);
-        $params['status'] = 'finish';
         $request->update($params);
         Upload::where('source_type', 'pre_sale')->where('source_id', $request->id)->update(['source_id' => 0]);
-        $files = explode(",", $request->upload_ids);
+        $files = explode(",", $req->upload_ids);
         if (count($files)) {
             Upload::whereIn('id', $files)->update(['source_id' => $request->id, 'source_type' => 'pre_sale']);
         }
@@ -37,12 +36,22 @@ class PreSaleController extends Controller
             $request->filter_val,
         ];
         $data = PreSaleRequest::filter(['filter_keyword' => $keyword, 'filter_status' => $request->input('filter_status')])
+            ->where('status', '!=', 'open')
             ->where('user_id', auth('api')->id())
-            ->with(['uploads', 'saleRequest.uploads',])
+            ->with(['uploads', 'saleRequest.uploads', 'saleRequest.user', 'saleRequest.handler'])
             ->paginate($request->input('per_page', 10));
 
         return $this->response()->paginator($data, $transformer, [], function ($resource, $fractal) {
-            $fractal->parseIncludes(['uploads', 'sale_request.uploads']);
+            $fractal->parseIncludes(['uploads', 'sale_request.uploads', 'sale_request.user', 'sale_request.handler']);
         });
+    }
+
+    public function updateStatus(PreSaleRequest $request, Request $req)
+    {
+        $request->update($req->only(['status']));
+        if($req->status == 'return'){
+            SaleRequest::where('sale_num', $request->sale_num)->update(['status' => 'return']);
+        }
+        return $tthis->response()->noContent();
     }
 }

@@ -25,8 +25,9 @@ class PreSaleRequest extends Model
     ];
 
     protected $statusArr = [
-        "open"   => "待处理",
-        "finish" => "完成",
+        "published" => "处理",
+        "return"    => "退回",
+        "finish"    => "完成",
     ];
 
 

@@ -21,17 +21,15 @@ class SaleRequestController extends Controller
 
     public function list(Request $request, SaleRequestTransformer $transformer)
     {
-        $keyword = [
-            $request->filter_col,
-            $request->filter_val,
-        ];
-        $data = SaleRequest::filter(['filter_keyword' => $keyword, 'filter_status' => $request->input('filter_status')])
+        $filter = $request->only('filter_status');
+        $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
+        $data = SaleRequest::filter($filter)
             ->where('user_id', auth('api')->id())
-            ->with(['uploads'])
+            ->with(['uploads', 'user', 'handler'])
             ->paginate($request->input('per_page', 10));
 
         return $this->response()->paginator($data, $transformer, [], function ($resource, $fractal) {
-            $fractal->parseIncludes(['uploads']);
+            $fractal->parseIncludes(['uploads', 'user', 'handler']);
         });
     }
 
@@ -40,21 +38,27 @@ class SaleRequestController extends Controller
     {
         $data = $request->all();
         $data['user_id'] = auth('api')->id() ?: 0;
-        SaleRequest::create($data);
-        //
-
+        $sale =  SaleRequest::create($data);
+        $ids = explode(",", $request->upload_ids);
+        Upload::whereIn('id',  $ids)->update(['source_id' => $sale->id]);
         return $this->response()->noContent();
     }
 
-    public function update(SaleRqRequest $request, SaleRequest $saleRequest)
+    public function update(SaleRequest $request, SaleRqRequest $saleRqRequest)
     {
-        $data = $request->all();
-        $data['user_id'] = auth('api')->id() ?: 0;
-        $saleRequest->update($request->all());
-        Upload::where('source_type', 'sale_request')->where('source_id', $request->id)->update(['source_id' => 0]);
-        $files = explode(",", $request->upload_ids);
+        $request->update($saleRqRequest->all());
+        $request->update(['status'=> 'open']);
+        Upload::where('source_type', 'sale_request')->where('source_id', $saleRqRequest->id)->update(['source_id' => 0]);
+
+        $files = explode(",", $saleRqRequest->upload_ids);
         if (count($files)) {
-            Upload::whereIn('id', $files)->update(['source_id' => $request->id, 'source_type' => 'sale_request']);
+            Upload::whereIn('id', $files)->update(['source_id' => $saleRqRequest->id, 'source_type' => 'sale_request']);
+        }
+
+        $pre =   PreSaleRequest::where('sale_num', $request->sale_num)->first();
+
+        if($pre){
+            $pre->update(['status' => 'open']);
         }
         return $this->response()->noContent();
     }
@@ -65,15 +69,14 @@ class SaleRequestController extends Controller
         return $this->response()->noContent();
     }
 
-    public function dispatchHandler(SaleRequest $request)
+    public function publish(SaleRequest $request)
     {
-        // $request->handle_user_id = app('request')->handle_user_id;
-        $user_id =  app('request')->handle_user_id ?: auth('api')->id();
-        $request->handle_user_id = $user_id;
-        $request->status = 'handle';
+        $user_id = auth('api')->id();
+        $request->status = 'published';
         $request->save();
         //生成一条
-        PreSaleRequest::create(['sale_num' => $request->sale_num, 'user_id' => $user_id,]);
+        PreSaleRequest::where('sale_num', $request->sale_num)->delete();
+        PreSaleRequest::create(['sale_num' => $request->sale_num, 'user_id' => $user_id]);
         return $this->response()->noContent();
     }
 }

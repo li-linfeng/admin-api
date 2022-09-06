@@ -11,7 +11,9 @@ class ProjectController extends Controller
 {
     public function list(Request $request, ProjectTransformer $projectTransformer)
     {
-        $projects = Project::with(['user'])->filter($request->all())->OrderByDesc("created_at")->paginate($request->per_page);
+        $filter = $request->only('filter_status');
+        $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
+        $projects = Project::with(['user'])->filter($filter)->OrderByDesc("created_at")->paginate($request->per_page);
         return $this->response->paginator($projects, $projectTransformer, [], function ($resource, $fractal) {
             $fractal->parseIncludes(['user']);
         });

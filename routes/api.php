@@ -63,11 +63,12 @@ $api->version('v1', [
         $api->post('/sale_requests', 'SaleRequestController@store')->name('api.sale_requests.store')->permissions("销售需求:新增销售需求");
         $api->put('/sale_requests/{request}', 'SaleRequestController@update')->name('api.sale_requests.update')->permissions("销售需求:编辑销售需求");
         $api->delete('/sale_requests/{request}', 'SaleRequestController@delete')->name('api.sale_requests.delete')->permissions("销售需求:删除销售需求");
-        $api->post('/sale_requests/{request}/handle_user', 'SaleRequestController@dispatchHandler')->name('api.sale_requests.handle_user')->permissions("销售需求:指定销售需求处理人");
+        $api->post('/sale_requests/{request}/publish', 'SaleRequestController@publish')->name('api.sale_requests.publish')->permissions("销售需求:发布需求");
 
 
         $api->get('/preSales', 'PreSaleController@list')->name('api.preSales.list')->permissions("工程售前:工程售前列表");
         $api->put('/preSales/{request}', 'PreSaleController@update')->name('api.preSales.update')->permissions("工程售前:添加工程售前资料");
+        $api->post('/preSales/{request}/status', 'PreSaleController@updateStatus')->name('api.preSales.updateStatus')->permissions("工程售前:修改工程售前状态");
 
         $api->get('/order_num', 'OrderController@getOrderNum')->name('api.order.order_num')->permissions("订单:获取订单编码");
         $api->post('/orders', 'OrderController@store')->name('api.order.store')->permissions("订单:新增订单");
