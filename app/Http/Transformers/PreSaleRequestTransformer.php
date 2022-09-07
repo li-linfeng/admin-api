@@ -18,9 +18,9 @@ class PreSaleRequestTransformer extends BaseTransformer
             'id'            => $preSaleRequest->id,
             'sale_num'      => $preSaleRequest->sale_num,
             'product_type'  => $preSaleRequest->product_type,
-            'product_price' => $preSaleRequest->product_price,
-            'pre_pay'       => $preSaleRequest->pre_pay,
-            'product_date'  => Carbon::parse($preSaleRequest->product_date)->toDateString(),
+            'product_price' => formatMoney($preSaleRequest->product_price),
+            'pre_pay'       => formatMoney($preSaleRequest->pre_pay),
+            'product_date'  => $preSaleRequest->product_date,
             'upload_ids'    => $preSaleRequest->upload_ids,
             'user_id'       => $preSaleRequest->user_id,
             'status'        => $preSaleRequest->status,
@@ -29,6 +29,7 @@ class PreSaleRequestTransformer extends BaseTransformer
             'order_id'      => $preSaleRequest->order_id,
             'need_num'      => $preSaleRequest->need_num,
             'created_at'    => $preSaleRequest->created_at->toDateTimeString(),
+            'return_reason' => $preSaleRequest->return_reason,
         ];
         if ($route == "api.order.list") {
             $data['is_start'] = $preSaleRequest->is_start;

@@ -36,7 +36,6 @@ class PreSaleController extends Controller
             $request->filter_val,
         ];
         $data = PreSaleRequest::filter(['filter_keyword' => $keyword, 'filter_status' => $request->input('filter_status')])
-            ->where('status', '!=', 'open')
             ->where('user_id', auth('api')->id())
             ->with(['uploads', 'saleRequest.uploads', 'saleRequest.user', 'saleRequest.handler'])
             ->paginate($request->input('per_page', 10));
@@ -50,8 +49,10 @@ class PreSaleController extends Controller
     {
         $request->update($req->only(['status']));
         if($req->status == 'return'){
+            $request->return_reason = $req->input('return_reason');
+            $request->save();
             SaleRequest::where('sale_num', $request->sale_num)->update(['status' => 'return']);
         }
-        return $tthis->response()->noContent();
+        return $this->response()->noContent();
     }
 }

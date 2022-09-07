@@ -46,8 +46,10 @@ class SaleRequestController extends Controller
 
     public function update(SaleRequest $request, SaleRqRequest $saleRqRequest)
     {
-        $request->update($saleRqRequest->all());
-        $request->update(['status'=> 'open']);
+        $params = $saleRqRequest->all();
+        $params['status'] = 'open';
+        $request->update( $params);
+
         Upload::where('source_type', 'sale_request')->where('source_id', $saleRqRequest->id)->update(['source_id' => 0]);
 
         $files = explode(",", $saleRqRequest->upload_ids);
@@ -58,7 +60,7 @@ class SaleRequestController extends Controller
         $pre =   PreSaleRequest::where('sale_num', $request->sale_num)->first();
 
         if($pre){
-            $pre->update(['status' => 'open']);
+            $pre->update(['status' => 'change']);
         }
         return $this->response()->noContent();
     }

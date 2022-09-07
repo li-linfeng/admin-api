@@ -115,3 +115,13 @@ if (!function_exists('makeTree')) {
         return $tree[$node_id]['children'];
     }
 }
+
+
+
+if (!function_exists('formatMoney')) {
+    function formatMoney($money, $decimal =2)
+    {
+        $num = floatval($money);
+        return $num ? number_format($num,$decimal) : 0;
+    }
+}

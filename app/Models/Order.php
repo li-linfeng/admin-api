@@ -42,4 +42,16 @@ class Order extends Model
     {
         return $this->statusArr[$this->status];
     }
+
+
+    public function setTotalPayAttribute($value)
+    {
+        $this->attributes['total_pay'] = str_replace(",", "", $value);
+    }
+
+
+    public function setProductPriceAttribute($value)
+    {
+        $this->attributes['total_pre_pay'] = str_replace(",", "", $value);
+    }
 }

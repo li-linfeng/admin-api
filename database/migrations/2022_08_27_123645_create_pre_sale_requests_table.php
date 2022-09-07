@@ -25,6 +25,7 @@ class CreatePreSaleRequestsTable extends Migration
             $table->string('status')->default("open")->comment("状态， published, return, finish");
             $table->integer('order_id')->default(0)->comment("关联的订单id");
             $table->integer('need_num')->default(0)->comment("需要的数量");
+            $table->text('return_reason')->nullable()->comment("退回原因");
             $table->timestamps();
         });
     }

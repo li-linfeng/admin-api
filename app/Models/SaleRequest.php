@@ -28,7 +28,8 @@ class SaleRequest extends Model
         'remark',
         'user_id',
         'sale_num',
-        'expect_time'
+        'expect_time',
+        'status',
     ];
     protected $statusArr = [
         "open"      => "销售",

@@ -21,10 +21,12 @@ class PreSaleRequest extends Model
         'status',
         'remark',
         'order_id',
-        'need_num'
+        'need_num',
+        'return_reason',
     ];
 
     protected $statusArr = [
+        "change"    => "需求变更中",
         "published" => "处理",
         "return"    => "退回",
         "finish"    => "完成",
@@ -51,4 +53,16 @@ class PreSaleRequest extends Model
     {
         return $this->statusArr[$this->status];
     }
+
+    public function setPrePayAttribute($value)
+    {
+        $this->attributes['pre_pay'] = str_replace(",", "", $value);
+    }
+
+
+    public function setProductPriceAttribute($value)
+    {
+        $this->attributes['product_price'] = str_replace(",", "", $value);
+    }
+
 }
