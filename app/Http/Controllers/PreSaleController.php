@@ -31,11 +31,9 @@ class PreSaleController extends Controller
 
     public function list(Request $request, PreSaleRequestTransformer $transformer)
     {
-        $keyword = [
-            $request->filter_col,
-            $request->filter_val,
-        ];
-        $data = PreSaleRequest::filter(['filter_keyword' => $keyword, 'filter_status' => $request->input('filter_status')])
+        $filter = $request->only('filter_status');
+        $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
+        $data = PreSaleRequest::filter($filter)
             ->where('user_id', auth('api')->id())
             ->with(['uploads', 'saleRequest.uploads', 'saleRequest.user', 'saleRequest.handler'])
             ->paginate($request->input('per_page', 10));

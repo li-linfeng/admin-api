@@ -14,7 +14,7 @@ trait UserFilter
             return;
         }
         return $this->builder->where(function ($q) use ($name) {
-            $q->where('nickname', $name)->orWhere('name', $name);
+            $q->where('username', $name)->orWhere('name', $name);
         });
     }
 }

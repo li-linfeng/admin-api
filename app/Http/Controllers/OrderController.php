@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Transformers\OrderTransformer;
-use App\Http\Transformers\PreSaleRequestTransformer;
+use App\Http\Transformers\OrderItemTransformer;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\PreSaleRequest;
+use App\Models\Upload;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+
 
 class OrderController extends Controller
 {
@@ -22,6 +24,9 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
+        if (! $request->items){
+            abort(422,"请选择关联的售前工程");
+        }
         $order = Order::create(array_merge(
             [
                 'order_num' => $request->order_num,
@@ -30,32 +35,50 @@ class OrderController extends Controller
             ],
             $request->only(['order_num', 'customer_name', 'total_pay', 'total_pre_pay', 'remark'])
         ));
-        $items = $request->items;
-        collect($items)->map(function ($item) use ($order) {
-            PreSaleRequest::where('id', $item['id'])->update(['order_id' => $order->id, 'need_num' => $item['count']]);
-        });
+        $items = [];
+        foreach($request->items as $v){
+            $items[$v['id']] = $v['count'];
+        }
+        $orderItems = PreSaleRequest::whereIn('id', array_keys($items))->get()->map(function ($item) use ($order, $items) {
+            return [
+                'sale_num'      => $item->sale_num,
+                'amount'        => $items[$item->id],
+                'product_type'  => $item->product_type,
+                'product_price' => $item->product_price,
+                'pre_pay'       => $item->pre_pay,
+                'product_date'  => $item->product_date,
+                'user_id'       => $item->user_id,
+                'status'        => 'open',
+                'order_id'       => $order->id,
+                'created_at'    => Carbon::now()->toDateTimeString(),
+            ]; 
+        })->toArray();
+        OrderItem::insert($orderItems);
+
+        $files = explode(",", $request->upload_ids);
+        if (count($files)) {
+            Upload::whereIn('id', $files)->update(['source_id' => $order->id, 'source_type' => 'order']);
+        }
         return $this->response()->noContent();
     }
 
 
-    public function list(Request $request, PreSaleRequestTransformer $transformer)
+    public function list(Request $request, OrderItemTransformer $transformer)
     {
-        $keyword = [
-            $request->filter_col,
-            $request->filter_val,
-        ];
-        $paginator = Order::filter(['filter_keyword' => $keyword, 'filter_status' => $request->input('filter_status')])
+        $filter = $request->only('filter_status');
+        $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
+        $paginator = Order::filter($filter)
             ->where('user_id', auth('api')->id())
-            ->with(['preSales.saleRequest', 'uploads'])
-            ->withCount('preSales')
+            ->with(['orderItems.saleRequest', 'uploads','orderItems.user'])
+            ->withCount('orderItems')
             ->paginate($request->input('per_page', 10));
 
         $result = [];
 
         foreach ($paginator->items() as $item) {
-            $sales = $item->preSales;
-            unset($item->preSales);
-            foreach ($sales as $k => $sale) {
+            $items = $item->orderItems;
+            unset($item->orderItems);
+            foreach ($items as $k => $sale) {
                 $sale->is_start = 0;
                 if ($k == 0) {
                     $sale->is_start = 1;
@@ -65,7 +88,7 @@ class OrderController extends Controller
             }
         }
         return $this->response()->collection(collect($result), $transformer, [], function ($resource, $fractal) {
-            $fractal->parseIncludes(['order.uploads', 'sale_request']);
+            $fractal->parseIncludes(['order.uploads', 'sale_request','user']);
         })->setMeta([
             'pagination' => [
                 'total' => $paginator->total(),

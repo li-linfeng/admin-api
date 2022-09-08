@@ -74,6 +74,8 @@ $api->version('v1', [
         $api->post('/orders', 'OrderController@store')->name('api.order.store')->permissions("订单:新增订单");
         $api->get('/orders', 'OrderController@list')->name('api.order.list')->permissions("订单:订单列表");
 
+        $api->post('/order_items/{orderItem}/finish', 'OrderItemController@finish')->name('api.orderItem.finish')->permissions("订单:完成订单需求");
+
         $api->post('/upload', 'UploadController@upload')->name('api.upload.upload')->permissions("附件上传:附件上传");
 
         $api->get('roles', 'RolesController@index')->name('api.roles.index')->permissions("角色管理:角色列表");

@@ -28,7 +28,7 @@ class OrderTransformer extends BaseTransformer
             'order_num'     => $order->order_num,
         ];
         if ($route == "api.order.list") {
-            $data['pre_sales_count'] = $order->pre_sales_count;
+            $data['order_items_count'] = $order->order_items_count;
         }
         return $data;
     }

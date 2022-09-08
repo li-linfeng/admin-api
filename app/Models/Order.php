@@ -32,6 +32,11 @@ class Order extends Model
         return $this->hasMany(PreSaleRequest::class, 'order_id', 'id');
     }
 
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'order_id', 'id');
+    }
+
 
     public function uploads()
     {

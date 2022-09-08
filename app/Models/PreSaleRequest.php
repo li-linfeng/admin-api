@@ -43,11 +43,7 @@ class PreSaleRequest extends Model
         return $this->belongsTo(SaleRequest::class, 'sale_num', 'sale_num');
     }
 
-    public function order()
-    {
-        return $this->belongsTo(Order::class, 'order_id', 'id');
-    }
-
+   
 
     public function getStatusCnAttribute()
     {

@@ -7,21 +7,21 @@ trait SaleRequestFilter
 {
     use BaseFilter;
 
-    // 类型
-    public function filterKeyword($data)
+
+    
+    public function filterCustomerType($type ='')
     {
-        if (!$data || !$data['filter_col'] || !$data['filter_val']) {
+        if (!$type) {
             return;
         }
-        return $this->builder->where($data['filter_col'], "like", "%{$data['filter_val']}%");
+        return $this->builder->where('customer_type', $type);
     }
 
-    public function filterStatus($status = '')
+    public function filterProductType($type ='')
     {
-        if (!$status) {
+        if (!$type) {
             return;
         }
-
-        return $this->builder->where('status', $status);
+        return $this->builder->where('product_type', $type);
     }
 }
