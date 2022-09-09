@@ -50,8 +50,8 @@ class PreSaleController extends Controller
         if($req->status == 'return'){
             $request->return_reason = $req->input('return_reason');
             $request->save();
-            SaleRequest::where('sale_num', $request->sale_num)->update(['status' => 'return']);
         }
+        SaleRequest::where('sale_num', $request->sale_num)->update(['status' => $req->status]);
         return $this->response()->noContent();
     }
 }
