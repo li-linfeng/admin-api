@@ -23,6 +23,7 @@ class PreSaleRequest extends Model
         'order_id',
         'need_num',
         'return_reason',
+        'expired_at',
     ];
 
     protected $statusArr = [

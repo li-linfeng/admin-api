@@ -19,7 +19,7 @@ class UserController extends Controller
 
     public function  index(Request $request, UserTransformer $userTransformer)
     {
-        $paginator = User::with(['roles'])->paginate($request->input('per_page', 10));
+        $paginator = User::filter($request->only('filter_name'))->with(['roles'])->paginate($request->input('per_page', 10));
         return $this->response()->paginator($paginator, $userTransformer, [], function ($resource, $fractal) {
             $fractal->parseIncludes(['roles']);
         });

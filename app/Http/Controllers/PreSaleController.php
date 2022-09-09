@@ -18,7 +18,8 @@ class PreSaleController extends Controller
             'product_price',
             'pre_pay',
             'product_date',
-            'remark'
+            'remark',
+            'expired_at'
         ]);
         $request->update($params);
         Upload::where('source_type', 'pre_sale')->where('source_id', $request->id)->update(['source_id' => 0]);
