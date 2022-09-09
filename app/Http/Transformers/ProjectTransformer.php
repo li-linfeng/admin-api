@@ -18,7 +18,7 @@ class ProjectTransformer extends BaseTransformer
             'product_name'     => $project->product_name,
             'project_time'     => $project->project_time,
             'project_duration' => $project->project_duration,
-            'cost'             => $project->cost,
+            'cost'             => formatMoney($project->cost),
             'status'           => $project->status,
             'status_cn'        => $project->status_cn,
             'created_at'       => $project->created_at->toDateTimeString(),
