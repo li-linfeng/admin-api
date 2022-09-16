@@ -43,6 +43,12 @@ class Order extends Model
         return $this->hasMany(Upload::class, 'source_id', 'id')->where('source_type', 'order');
     }
 
+
+    public function boom()
+    {
+        return $this->hasOne(Upload::class, 'id', 'boom_id');
+    }
+
     public function getStatusCnAttribute()
     {
         return $this->statusArr[$this->status];
@@ -55,7 +61,7 @@ class Order extends Model
     }
 
 
-    public function setProductPriceAttribute($value)
+    public function setTotalPrePayAttribute($value)
     {
         $this->attributes['total_pre_pay'] = str_replace(",", "", $value);
     }

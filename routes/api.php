@@ -46,9 +46,13 @@ $api->version('v1', [
         $api->get('/user/info', 'UserController@info')->name('api.user.info')->permissions('用户信息:用户信息');
         $api->get('/user_permissions', 'UserController@getUserPermissions')->name('api.user.user_permission')->permissions('用户信息:用户权限');
 
-        $api->get('/categories', 'CategoryController@list')->name('api.categories.list')->permissions("分类管理:分类列表");
-        $api->post('/categories', 'CategoryController@store')->name('api.categories.store')->permissions("分类管理:新增分类");
-        $api->delete('/categories/{category}', 'CategoryController@delete')->name('api.categories.delete')->permissions("分类管理:删除分类");
+        $api->get('/materials', 'MaterialController@index')->name('api.materials.index')->permissions("物料管理:物料列表");
+        $api->post('/materials', 'MaterialController@store')->name('api.materials.store')->permissions("物料管理:新增物料");
+        $api->delete('/materials/{material}', 'MaterialController@delete')->name('api.materials.delete')->permissions("物料管理:删除物料");
+
+        $api->get('/categories', 'CategoryController@index')->name('api.categories.index')->permissions("物料管理:分类列表");
+        // $api->post('/categories', 'CategoryController@store')->name('api.categories.store')->permissions("分类管理:新增分类");
+        // $api->delete('/categories/{category}', 'CategoryController@delete')->name('api.categories.delete')->permissions("分类管理:删除分类");
 
 
         $api->get('/projects', 'ProjectController@list')->name('api.projects.list')->permissions("项目管理:项目列表");

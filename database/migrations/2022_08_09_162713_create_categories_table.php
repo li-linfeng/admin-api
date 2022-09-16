@@ -15,9 +15,11 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string("label")->comment("名称");
-            $table->string("parent_id")->comment("上级分类的id")->default(0);
-            $table->string("has_child")->comment("是否有子分类")->default(0);
+            $table->string("name")->comment("名称");
+            $table->string("name_cn")->comment("名称");
+            $table->string("type")->comment("type")->default('');
+            $table->string("code")->comment("series_code")->default('');
+            $table->string("description")->comment("描述")->default('');
             $table->timestamps();
         });
     }

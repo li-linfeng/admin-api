@@ -69,7 +69,7 @@ class OrderController extends Controller
         $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
         $paginator = Order::filter($filter)
             ->where('user_id', auth('api')->id())
-            ->with(['orderItems.saleRequest', 'uploads','orderItems.user'])
+            ->with(['orderItems.saleRequest', 'uploads','orderItems.user','boom'])
             ->withCount('orderItems')
             ->paginate($request->input('per_page', 10));
 
@@ -88,7 +88,7 @@ class OrderController extends Controller
             }
         }
         return $this->response()->collection(collect($result), $transformer, [], function ($resource, $fractal) {
-            $fractal->parseIncludes(['order.uploads', 'sale_request','user']);
+            $fractal->parseIncludes(['order.uploads', 'sale_request','user','order.boom']);
         })->setMeta([
             'pagination' => [
                 'total' => $paginator->total(),

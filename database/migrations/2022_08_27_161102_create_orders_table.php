@@ -23,6 +23,8 @@ class CreateOrdersTable extends Migration
             $table->string('total_pre_pay')->default("")->comment("总预付款");
             $table->string('upload_ids')->default("")->comment("附件");
             $table->text('remark')->nullable()->comment("备注");
+            $table->integer('boom_id')->default(0)->comment("boom图纸id");
+            $table->string('material_number')->default("")->comment("物料编号");
             $table->timestamps();
         });
     }

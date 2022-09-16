@@ -7,7 +7,7 @@ use App\Models\Order;
 class OrderTransformer extends BaseTransformer
 {
 
-    protected $availableIncludes = ['pre_sales', 'uploads'];
+    protected $availableIncludes = ['pre_sales', 'uploads','boom'];
 
 
     public function transform(Order $order)
@@ -49,5 +49,13 @@ class OrderTransformer extends BaseTransformer
             return $this->null();
         }
         return $this->collection($order->uploads, new UploadTransformer(), 'flatten');
+    }
+
+    public function includeBoom(Order $order)
+    {
+        if (!$order->boom) {
+            return $this->nullObject();
+        }
+        return $this->item($order->boom, new UploadTransformer());
     }
 }
