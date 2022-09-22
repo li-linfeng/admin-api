@@ -7,6 +7,7 @@ use App\Models\Resource;
 use App\Models\Video;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,11 +40,25 @@ Artisan::command('init', function () {
             ];
         }
     }
+    $data[]= [
+        'name'        => 'HNXXX',
+        'name_cn'     => 'HNXXX',
+        'description' => '公用零件',
+        'type'        => 'XX',
+        'code'        => 'XX',
+        'created_at'  => Carbon::now()->toDateTimeString(),
+        'updated_at'  => Carbon::now()->toDateTimeString()
+    ];
     Category::insert($data);
 });
 
 
 Artisan::command('test', function () {
-$material = Material::find(1);
-dd($material->toArray());
+
+    DB::beginTransaction();
+
+    $number = Material::select(DB::raw('max(seq)+1 as number'))->lockForUpdate()->value('number');
+    
+    DB::commit();
+    dd(str_pad($number,4,'0',STR_PAD_LEFT));
 });

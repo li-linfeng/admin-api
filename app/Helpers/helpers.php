@@ -103,6 +103,9 @@ if (!function_exists('makeTree')) {
     function makeTree($data, $node_id)
     {
         $tree = [];
+        if(count($data) == 0){
+            return $tree;
+        }
         foreach ($data as  &$item) {
             $parent_id = $item['parent_id'];
             if (isset($data[$parent_id])) {

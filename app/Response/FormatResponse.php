@@ -35,12 +35,17 @@ class FormatResponse
              * return $this->response->paginator($histories, new TestTransformer());
              */
             // 分页处理
-            if (isset($event->content) && isset($event->content['meta']) && isset($event->content['meta']['pagination'])) {
-                // Log::debug("对响应的分页数据进行重新组装");
-                $tempContent['pageSize'] = $event->content['meta']['pagination']['per_page'];
-                $tempContent['total'] = $event->content['meta']['pagination']['total'];
-                $tempContent['currentPage'] = $event->content['meta']['pagination']['current_page'];
-                $tempContent['total_pages'] = $event->content['meta']['pagination']['total_pages'];
+            if (isset($event->content) && isset($event->content['meta'])) {
+                $meta = $event->content['meta'];
+                if (isset($meta['pagination'])){
+                    $tempContent['pageSize'] = $event->content['meta']['pagination']['per_page'];
+                    $tempContent['total'] = $event->content['meta']['pagination']['total'];
+                    $tempContent['currentPage'] = $event->content['meta']['pagination']['current_page'];
+                    $tempContent['total_pages'] = $event->content['meta']['pagination']['total_pages'];
+                }
+
+                unset($meta['pagination']);
+                $tempContent = array_merge($tempContent, $meta);
             }
 
             $event->content = array_merge($addData, $tempContent);

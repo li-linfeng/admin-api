@@ -47,8 +47,11 @@ $api->version('v1', [
         $api->get('/user_permissions', 'UserController@getUserPermissions')->name('api.user.user_permission')->permissions('用户信息:用户权限');
 
         $api->get('/materials', 'MaterialController@index')->name('api.materials.index')->permissions("物料管理:物料列表");
-        $api->post('/materials', 'MaterialController@store')->name('api.materials.store')->permissions("物料管理:新增物料");
+        $api->post('/material_seq', 'MaterialController@getMaterialSeq')->name('api.materials.seq')->permissions("物料管理:获取物料编码");
+        $api->get('/material_tree', 'MaterialController@tree')->name('api.materials.tree')->permissions("物料管理:获取物料树");
         $api->delete('/materials/{material}', 'MaterialController@delete')->name('api.materials.delete')->permissions("物料管理:删除物料");
+        $api->put('/materials/{material}', 'MaterialController@update')->name('api.materials.update')->permissions("物料管理:增加物料");
+        $api->post('/materials/{material}/rel', 'MaterialController@bindRel')->name('api.materials.rel')->permissions("物料管理:添加子组件");
 
         $api->get('/categories', 'CategoryController@index')->name('api.categories.index')->permissions("物料管理:分类列表");
         // $api->post('/categories', 'CategoryController@store')->name('api.categories.store')->permissions("分类管理:新增分类");

@@ -15,6 +15,6 @@ class Category extends Model
 
     public function children()
     {
-        return $this->hasMany(Material::class, "category_id", "id")->where('type', 'assembly');
+        return $this->hasMany(Material::class, "category_id", "id")->whereIn('type', ['assembly','single-component']);
     }
 }

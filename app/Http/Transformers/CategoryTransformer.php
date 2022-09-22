@@ -15,7 +15,10 @@ class CategoryTransformer extends BaseTransformer
        return  [
             'id'          => $category->id,
             'name'        => $category->name,
+            'code'        => $category->code,
             'description' => $category->description,
+            'type'        => 'category',
+            'key'         => $category->name.uniqid()
         ];
     }
 

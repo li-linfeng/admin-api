@@ -12,9 +12,9 @@ class CategoryController extends Controller
     {
         $categories = [];
 
-        $categories = Category::with('children')->paginate($request->input('per_page',10));
-        return $this->response->paginator($categories, $categoryTransformer, [], function($resource, $fractal){
-            $fractal->parseIncludes(['children']);
+        $categories = Category::with(['children.children.children'])->get();
+        return $this->response->collection($categories, $categoryTransformer, [], function($resource, $fractal){
+            $fractal->parseIncludes(['children.children.children']);
         });
     }
 
