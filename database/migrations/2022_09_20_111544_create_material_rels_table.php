@@ -19,6 +19,8 @@ class CreateMaterialRelsTable extends Migration
             $table->integer('child_id')->comment('子组件的id')->default(0);
             $table->integer('amount')->comment('需要子组件的数量')->default(0);
             $table->timestamps();
+            $table->index('parent_id');
+            $table->index('child_id');
         });
     }
 

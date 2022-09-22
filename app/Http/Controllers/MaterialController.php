@@ -97,9 +97,9 @@ class MaterialController extends Controller
         $seq = Material::select(DB::raw('max(seq)+1 as number'))->where('category_id', $category->id)->lockForUpdate()->value('number');
         $seq = $seq ?:1;
         $type_map = [
-            'assembly'     => 1,
+            'assembly'     => 3,
             'component'    => 2,
-            'sub-assembly' => 3,
+            'sub-assembly' => 1,
         ];
         $type = $request->type == 'single-component' ?  '' : $type_map[$request->type];
         $material = Material::create([

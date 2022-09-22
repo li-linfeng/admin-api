@@ -19,7 +19,14 @@ class Material extends Model
 
     public function children()
     {
-        return $this->hasManyThrough(Material::class, MaterialRel::class, 'parent_id','id','id','child_id');
+        return $this->belongsToMany(Material::class, MaterialRel::class, 'parent_id','child_id')->withPivot('amount');
+    }
+
+
+    public function files()
+    {   
+        return $this->hasMany(Upload::class, 'source_id', 'id')->where('source_type', 'material');
+
     }
 
 }

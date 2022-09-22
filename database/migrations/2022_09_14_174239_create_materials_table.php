@@ -25,6 +25,7 @@ class CreateMaterialsTable extends Migration
             $table->integer("is_show")->default(0)->comment("默认不展示");
             $table->integer("status")->default(0)->comment("初始化时未绑定子组件");
             $table->timestamps();
+            $table->index('category_id');
         });
 
         DB::statement("ALTER TABLE materials CHANGE seq seq INT(4) UNSIGNED ZEROFILL DEFAULT 0000 NOT NULL");

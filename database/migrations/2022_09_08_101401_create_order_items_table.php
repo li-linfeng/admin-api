@@ -24,6 +24,7 @@ class CreateOrderItemsTable extends Migration
             $table->string('product_date')->default("")->comment("产品货期");
             $table->integer('user_id')->default(0)->comment("创建者id");
             $table->string('status')->default('open')->comment("状态");
+            $table->string('material_number')->default("")->comment("物料编号");
             $table->timestamps();
         });
     }

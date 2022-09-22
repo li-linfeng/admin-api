@@ -34,7 +34,6 @@ trait BaseFilter
         }
 
         $col = explode(".", $data['filter_col']);
- 
         if (count($col) >1){
           
             return  $this->builder->whereHas($col[0], function($q) use ( $col ,$data){

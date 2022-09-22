@@ -82,6 +82,8 @@ $api->version('v1', [
         $api->get('/orders', 'OrderController@list')->name('api.order.list')->permissions("订单:订单列表");
 
         $api->post('/order_items/{orderItem}/finish', 'OrderItemController@finish')->name('api.orderItem.finish')->permissions("订单:完成订单需求");
+        $api->post('/order_items/{orderItem}/bind', 'OrderItemController@bindMaterial')->name('api.orderItem.bind')->permissions("订单:绑定物料号");
+        $api->get('/order_items/{orderItem}/download', 'OrderItemController@download')->name('api.orderItem.download')->permissions("订单:下载Boom图纸");
 
         $api->post('/upload', 'UploadController@upload')->name('api.upload.upload')->permissions("附件上传:附件上传");
 

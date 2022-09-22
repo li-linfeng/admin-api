@@ -29,4 +29,15 @@ class OrderItem extends Model
     }
 
 
+
+    public function setPrePayAttribute($value)
+    {
+        $this->attributes['pre_pay'] = str_replace(",", "", $value);
+    }
+
+    public function setProductPriceAttribute($value)
+    {
+        $this->attributes['product_price'] = str_replace(",", "", $value);
+    }
+
 }

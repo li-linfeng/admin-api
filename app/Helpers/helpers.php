@@ -119,6 +119,40 @@ if (!function_exists('makeTree')) {
     }
 }
 
+if (!function_exists('flattenTree')) {
+    function flattenTree($tree, $parent_index = '')
+    {
+        $result = [];
+        if(count($tree) == 0){
+            return $tree;
+        }
+        foreach($tree as $key=>$item){
+            $index = implode('.', [$parent_index, ++$key]);
+            if (isset($item->children) &&  count($item->children) >0){
+                $result = array_merge($result,flattenTree($item->children,  $index));
+            }else{
+                $tmp = [
+                    'index'       => $index,
+                    'description' => $item->description,
+                    'created_at'  => $item->created_at->toDateTimeString(),
+                    'name'        => $item->label,
+                    'amount'      => $item->pivot->amount,
+                    'files'       => $item->files->map(function($file){
+                        return [
+                            'id'   => $file->id,
+                            'path' => $file->path,
+                            'url'  => $file->url,
+                        ];
+                    })->toArray(),
+                ];
+                $result[] = $tmp;
+            }
+        }
+        return $result;
+    }
+}
+
+
 
 
 if (!function_exists('formatMoney')) {
