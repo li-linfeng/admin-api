@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MaterialExport;
 use App\Models\Material;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderItemController extends Controller
 {
@@ -39,14 +41,14 @@ class OrderItemController extends Controller
 
     public function download(OrderItem $orderItem )
     {
-
-      
         //获取关联的文件
         $materials = Material::where('label', $orderItem->material_number)
         ->with([ 'children.files','children.children.files'])
         ->get();
-
         $items = flattenTree($materials);
+        //生成excel
 
+        Excel::store(new MaterialExport($items), $items[0]['name'].'.xlsx', 'public');
+        dd(123);
     }
 }

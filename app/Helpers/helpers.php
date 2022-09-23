@@ -127,25 +127,25 @@ if (!function_exists('flattenTree')) {
             return $tree;
         }
         foreach($tree as $key=>$item){
-            $index = implode('.', [$parent_index, ++$key]);
+            $num =  $key +1 ;
+            $index =  $parent_index ? $parent_index .'.'.  $num  : $num ;
+            $tmp = [
+                'index'       => $index,
+                'description' => $item->description,
+                'created_at'  => $item->created_at->toDateTimeString(),
+                'name'        => $item->label,
+                'amount'      => $item->pivot ? $item->pivot->amount : 1,
+                'files'       => $item->files->map(function($file){
+                    return [
+                        'id'   => $file->id,
+                        'path' => $file->path,
+                        'url'  => $file->url,
+                    ];
+                })->toArray(),
+            ];
+            $result[] = $tmp;
             if (isset($item->children) &&  count($item->children) >0){
                 $result = array_merge($result,flattenTree($item->children,  $index));
-            }else{
-                $tmp = [
-                    'index'       => $index,
-                    'description' => $item->description,
-                    'created_at'  => $item->created_at->toDateTimeString(),
-                    'name'        => $item->label,
-                    'amount'      => $item->pivot->amount,
-                    'files'       => $item->files->map(function($file){
-                        return [
-                            'id'   => $file->id,
-                            'path' => $file->path,
-                            'url'  => $file->url,
-                        ];
-                    })->toArray(),
-                ];
-                $result[] = $tmp;
             }
         }
         return $result;
