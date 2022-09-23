@@ -23,6 +23,13 @@ class OrderItem extends Model
         return $this->belongsTo(User::class, "user_id", "id");
     }
 
+
+    //工厂的处理人
+    public function handler()
+    {
+        return $this->hasOneThrough(User::class, Category::class, 'name', 'id', 'material_number', 'handler_id' );
+    }
+
     public function order()
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');

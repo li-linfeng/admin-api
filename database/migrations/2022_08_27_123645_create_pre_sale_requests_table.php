@@ -17,6 +17,7 @@ class CreatePreSaleRequestsTable extends Migration
             $table->id();
             $table->string('sale_num')->default("")->comment("关联销售需求编码");
             $table->string('product_type')->default("")->comment("产品型号");
+            $table->string('category')->default("")->comment("产品所属类型");
             $table->string('product_price')->default("")->comment("产品价格");
             $table->string('pre_pay')->default("")->comment("预付款金额");
             $table->string('product_date')->default("")->comment("产品货期");

@@ -46,6 +46,7 @@ class SaleRequestController extends Controller
 
     public function update(SaleRequest $request, SaleRqRequest $saleRqRequest)
     {
+        $this->canHandle($request);
         $params = $saleRqRequest->all();
         $params['status'] = 'open';
         $request->update( $params);
@@ -67,18 +68,29 @@ class SaleRequestController extends Controller
 
     public function delete(SaleRequest $request)
     {
+        $this->canHandle($request);
         $request->delete();
         return $this->response()->noContent();
     }
 
     public function publish(SaleRequest $request)
     {
+        $this->canHandle($request);
         $user_id = auth('api')->id();
         $request->status = 'published';
         $request->save();
         //生成一条
         PreSaleRequest::where('sale_num', $request->sale_num)->delete();
-        PreSaleRequest::create(['sale_num' => $request->sale_num, 'user_id' => $user_id]);
+        PreSaleRequest::create(['sale_num' => $request->sale_num, 'user_id' => $user_id, 'category' => $request->product_type]);
         return $this->response()->noContent();
     }
+
+    protected function canHandle(SaleRequest $saleRequest)
+    {
+        if ($saleRequest->user_id == request()->user_id || request()->is_super){
+            return true;
+        }
+        abort(403, '没有权限进行此操作');
+    }
+
 }

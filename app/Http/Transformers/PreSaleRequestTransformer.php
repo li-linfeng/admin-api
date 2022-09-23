@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class PreSaleRequestTransformer extends BaseTransformer
 {
 
-    protected $availableIncludes = ['uploads', 'sale_request'];
+    protected $availableIncludes = ['uploads', 'sale_request', 'user', 'handler'];
 
 
     public function transform(PreSaleRequest $preSaleRequest)
@@ -47,7 +47,23 @@ class PreSaleRequestTransformer extends BaseTransformer
         if (!$preSaleRequest->saleRequest) {
             return $this->nullObject();
         }
-        return $this->item($preSaleRequest->saleRequest, new SaleRequestTransformer(), 'flatten');
+        return $this->item($preSaleRequest->saleRequest, new SaleRequestTransformer());
+    }
+
+    public function includeUser(PreSaleRequest $preSaleRequest)
+    {
+        if (!$preSaleRequest->user) {
+            return $this->nullObject();
+        }
+        return $this->item($preSaleRequest->user, new UserTransformer());
+    }
+
+    public function includeHandler(PreSaleRequest $preSaleRequest)
+    {
+        if (!$preSaleRequest->handler) {
+            return $this->nullObject();
+        }
+        return $this->item($preSaleRequest->handler, new UserTransformer());
     }
 
 }

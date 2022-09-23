@@ -135,11 +135,13 @@ if (!function_exists('flattenTree')) {
                 'created_at'  => $item->created_at->toDateTimeString(),
                 'name'        => $item->label,
                 'amount'      => $item->pivot ? $item->pivot->amount : 1,
-                'files'       => $item->files->map(function($file){
+                'files'       => $item->files->map(function($file)use($item){
                     return [
-                        'id'   => $file->id,
-                        'path' => $file->path,
-                        'url'  => $file->url,
+                        'id'       => $file->id,
+                        'path'     => $file->path,
+                        'url'      => $file->url,
+                        'name'     => $item->label,
+                        'filename' => $file->filename,
                     ];
                 })->toArray(),
             ];

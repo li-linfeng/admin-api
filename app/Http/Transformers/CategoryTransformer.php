@@ -7,7 +7,7 @@ use App\Models\Category;
 class CategoryTransformer extends BaseTransformer
 {
 
-    protected $availableIncludes = ['children'];
+    protected $availableIncludes = ['children', 'handler'];
 
 
     public function transform(Category $category)
@@ -28,5 +28,13 @@ class CategoryTransformer extends BaseTransformer
             return $this->null();
         }
         return $this->collection($category->children, new MaterialTransformer(), 'flatten');
+    }
+
+    public function includeHandler(Category $category)
+    {
+        if (!$category->handler) {
+            return $this->nullObject();
+        }
+        return $this->item($category->handler, new UserTransformer());
     }
 }

@@ -13,8 +13,9 @@ class UserController extends Controller
 {
     public function  info(UserTransformer $userTransformer)
     {
-        $info = auth('api')->user();
-        return $this->response()->item($info, $userTransformer);
+        $user = auth('api')->user();
+        $user->load('roles');
+        return $this->response()->item($user, $userTransformer);
     }
 
     public function  index(Request $request, UserTransformer $userTransformer)
@@ -23,6 +24,13 @@ class UserController extends Controller
         return $this->response()->paginator($paginator, $userTransformer, [], function ($resource, $fractal) {
             $fractal->parseIncludes(['roles']);
         });
+    }
+
+
+    public function  list(Request $request, UserTransformer $userTransformer)
+    {
+        $paginator = User::filter(['filter_name'=>$request->input('keyword')])->get();
+        return $this->response()->collection($paginator, $userTransformer);
     }
 
     public function  store(UserRequest $request)

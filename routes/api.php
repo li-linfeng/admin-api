@@ -40,7 +40,7 @@ $api->version('v1', [
      */
 
     $api->group([
-        'middleware' => ['auth.jwt']
+        'middleware' => ['auth.jwt', 'permission']
 
     ], function ($api) {
         $api->get('/user/info', 'UserController@info')->name('api.user.info')->permissions('用户信息:用户信息');
@@ -54,6 +54,8 @@ $api->version('v1', [
         $api->post('/materials/{material}/rel', 'MaterialController@bindRel')->name('api.materials.rel')->permissions("物料管理:添加子组件");
 
         $api->get('/categories', 'CategoryController@index')->name('api.categories.index')->permissions("物料管理:分类列表");
+        $api->post('/categories/{category}/handler', 'CategoryController@setHandler')->name('api.categories.handler')->permissions("物料管理:设置处理人");
+     
         // $api->post('/categories', 'CategoryController@store')->name('api.categories.store')->permissions("分类管理:新增分类");
         // $api->delete('/categories/{category}', 'CategoryController@delete')->name('api.categories.delete')->permissions("分类管理:删除分类");
 
@@ -62,7 +64,7 @@ $api->version('v1', [
         $api->post('/projects', 'ProjectController@store')->name('api.projects.store')->permissions("项目管理:新增项目");
         $api->patch('/projects/{project}/status', 'ProjectController@status')->name('api.projects.status')->permissions("项目管理:更新项目状态");
         $api->delete('/projects/{project}', 'ProjectController@delete')->name('api.projects.delete')->permissions("项目管理:删除项目");
-
+       
 
 
         $api->get('/sale_requests', 'SaleRequestController@list')->name('api.sale_requests.list')->permissions("销售需求:销售需求列表");
@@ -95,6 +97,7 @@ $api->version('v1', [
         $api->get('permissions', 'RolesController@allPermissions')->name('api.roles.permissions')->permissions("角色管理:权限列表");
 
         $api->get('users', 'UserController@index')->name('api.users.index')->permissions("用户管理:用户列表");
+        $api->get('user_list', 'UserController@list')->name('api.users.list')->permissions("用户管理:查询用户");
         $api->post('users', 'UserController@store')->name('api.users.store')->permissions("用户管理:新增用户");
         $api->put('users/{user}', 'UserController@update')->name('api.users.update')->permissions("用户管理:編輯用戶");
         $api->delete('users/{user}', 'UserController@delete')->name('api.users.delete')->permissions("用户管理:删除用户");

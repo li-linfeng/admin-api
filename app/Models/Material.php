@@ -26,7 +26,6 @@ class Material extends Model
     public function files()
     {   
         return $this->hasMany(Upload::class, 'source_id', 'id')->where('source_type', 'material');
-
     }
 
 }

@@ -7,7 +7,7 @@ use App\Models\OrderItem;
 class OrderItemTransformer extends BaseTransformer
 {
 
-    protected $availableIncludes = ['sale_request','order','user'];
+    protected $availableIncludes = ['sale_request','order','user', 'handler'];
 
     public function transform(OrderItem $orderItem)
     {
@@ -52,5 +52,13 @@ class OrderItemTransformer extends BaseTransformer
             return $this->nullObject();
         }
         return $this->item($orderItem->user, new UserTransformer());
+    }
+
+    public function includeHandler(OrderItem $orderItem)
+    {
+        if (!$orderItem->handler) {
+            return $this->nullObject();
+        }
+        return $this->item($orderItem->handler, new UserTransformer());
     }
 }

@@ -23,7 +23,9 @@ class MaterialTransformer extends BaseTransformer
                     'has_child'   => $material->has_child,
                     'category_id' => $material->category_id,
                     'key'         => $material->label.uniqid(),
-                    'status'         => $material->status
+                    'status'      => $material->status,
+                    'amount'      => $material->pivot ?  $material->pivot->amount: 0,
+                    'label'       => $material->label,
                 ];
             default :
                 return  [

@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Material;
 use App\Models\MaterialRel;
 use App\Models\Upload;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -39,17 +40,22 @@ class MaterialController extends Controller
         ];
 
       Material::where(function($q) use($request){
-            $q->whereIn('type', ['sub-assembly','component','single-component'])->orWhere('category_id',$request->filter_category_id);
-        })
+        $q->where('type', '=','single-component')
+          ->orWhere(function($query) use($request){
+                $query->where('type', '!=','assembly')
+                      ->Where('category_id',$request->filter_category_id);
+            });
+      })
         ->where('id','!=', $request->material_id)
         ->where('is_show', 1)
         ->get()
         ->groupBy('type')->map(function($items, $key)use (&$data){
             foreach ($items as $material){
                 $data[$key]['children'][] = [
-                    'id'          => $material->id,
-                    'label'       => $material->label,
-                    'description' => $material->description,
+                    'id'           => $material->id,
+                    'label'        => $material->label,
+                    'description'  => $material->description,
+                    'has_children' => $material->has_children,
                 ];
             }
         });
@@ -63,12 +69,19 @@ class MaterialController extends Controller
         if (!$material->has_child){
             abort(422, "此物料没有子分类，请勿添加");
         }
+
+        MaterialRel::where(  'parent_id', $material->id)->delete();
+        $insert = [];
         foreach ($request->children as  $child){
-            MaterialRel::updateOrCreate([
+          $insert[] = [
                 'parent_id' => $material->id,
-                'child_id'  => $child['id']
-            ],['amount' => $child['amount']]);
+                'child_id'  => $child['id'],
+                'amount'    => $child['amount'],
+                'created_at'=> Carbon::now()->toDateTimeString(),
+                'updated_at'=> Carbon::now()->toDateTimeString(),
+            ];
         }
+        MaterialRel::insert($insert);
         $material->update(['status' => 1]);
         return $this->response()->noContent();
     }

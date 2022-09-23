@@ -44,11 +44,6 @@ class Order extends Model
     }
 
 
-    public function boom()
-    {
-        return $this->hasOne(Upload::class, 'id', 'boom_id');
-    }
-
     public function getStatusCnAttribute()
     {
         return $this->statusArr[$this->status];

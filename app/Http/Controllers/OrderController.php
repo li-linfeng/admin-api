@@ -21,12 +21,12 @@ class OrderController extends Controller
     }
 
 
-
     public function store(Request $request)
     {
         if (! $request->items){
             abort(422,"请选择关联的售前工程");
         }
+
         $order = Order::create(array_merge(
             [
                 'order_num' => $request->order_num,
@@ -35,10 +35,12 @@ class OrderController extends Controller
             ],
             $request->only(['order_num', 'customer_name', 'total_pay', 'total_pre_pay', 'remark'])
         ));
+
         $items = [];
         foreach($request->items as $v){
             $items[$v['id']] = $v['count'];
         }
+
         $orderItems = PreSaleRequest::whereIn('id', array_keys($items))->get()->map(function ($item) use ($order, $items) {
             return [
                 'sale_num'      => $item->sale_num,
@@ -69,7 +71,7 @@ class OrderController extends Controller
         $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
         $paginator = Order::filter($filter)
             ->where('user_id', auth('api')->id())
-            ->with(['orderItems.saleRequest', 'uploads','orderItems.user','boom'])
+            ->with(['orderItems.saleRequest', 'uploads','orderItems.user','orderItems.handler'])
             ->withCount('orderItems')
             ->paginate($request->input('per_page', 10));
 
@@ -88,7 +90,7 @@ class OrderController extends Controller
             }
         }
         return $this->response()->collection(collect($result), $transformer, [], function ($resource, $fractal) {
-            $fractal->parseIncludes(['order.uploads', 'sale_request','user','order.boom']);
+            $fractal->parseIncludes(['order.uploads', 'sale_request','user','handler']);
         })->setMeta([
             'pagination' => [
                 'total' => $paginator->total(),

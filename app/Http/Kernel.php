@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CheckPermission;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -69,5 +70,6 @@ class Kernel extends HttpKernel
         'auth.jwt' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
         // 多表jwt验证校验
         'jwt.role' => \App\Http\Middleware\JWTRoleAuth::class,
+        'permission' => CheckPermission::class,
     ];
 }

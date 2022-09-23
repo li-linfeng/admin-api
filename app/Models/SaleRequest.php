@@ -50,7 +50,7 @@ class SaleRequest extends Model
 
     public function handler()
     {
-        return $this->belongsTo(User::class, 'handle_user_id', 'id');
+        return $this->hasOneThrough(User::class, Category::class, 'name', 'id', 'product_type', 'handler_id' );
     }
 
 

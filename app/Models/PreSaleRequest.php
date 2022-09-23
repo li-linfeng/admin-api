@@ -24,6 +24,7 @@ class PreSaleRequest extends Model
         'need_num',
         'return_reason',
         'expired_at',
+        'category'
     ];
 
     protected $statusArr = [
@@ -44,6 +45,16 @@ class PreSaleRequest extends Model
         return $this->belongsTo(SaleRequest::class, 'sale_num', 'sale_num');
     }
 
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id' );
+    }
+
+    public function handler()
+    {
+        return $this->hasOneThrough(User::class, Category::class, 'name', 'id', 'category', 'handler_id' );
+    }
    
 
     public function getStatusCnAttribute()

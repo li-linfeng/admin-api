@@ -13,6 +13,7 @@ class PreSaleController extends Controller
     //
     public function update(PreSaleRequest $request, Request $req)
     {
+        $this->canHandle($request);
         $params = app('request')->only([
             'product_type',
             'product_price',
@@ -36,16 +37,17 @@ class PreSaleController extends Controller
         $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
         $data = PreSaleRequest::filter($filter)
             ->where('user_id', auth('api')->id())
-            ->with(['uploads', 'saleRequest.uploads', 'saleRequest.user', 'saleRequest.handler'])
+            ->with(['uploads', 'saleRequest.uploads', 'user', 'handler'])
             ->paginate($request->input('per_page', 10));
 
         return $this->response()->paginator($data, $transformer, [], function ($resource, $fractal) {
-            $fractal->parseIncludes(['uploads', 'sale_request.uploads', 'sale_request.user', 'sale_request.handler']);
+            $fractal->parseIncludes(['uploads', 'sale_request.uploads', 'user', 'handler']);
         });
     }
 
     public function updateStatus(PreSaleRequest $request, Request $req)
     {
+        $this->canHandle($request);
         $request->update($req->only(['status']));
         if($req->status == 'return'){
             $request->return_reason = $req->input('return_reason');
@@ -53,5 +55,13 @@ class PreSaleController extends Controller
         }
         SaleRequest::where('sale_num', $request->sale_num)->update(['status' => $req->status]);
         return $this->response()->noContent();
+    }
+
+    protected function canHandle(PreSaleRequest $preRequest)
+    {
+        if ($preRequest->handler->id == request()->user_id || request()->is_super){
+            return true;
+        }
+        abort(403, '没有权限进行此操作');
     }
 }

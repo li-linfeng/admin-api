@@ -19,10 +19,10 @@ class ProjectController extends Controller
         });
     }
 
-    // "product_time":["2022-02-28","2023-01-31"],
+
     public  function store(ProjectRequest $request, ProjectTransformer $projectTransformer)
     {
-        $user_id = auth('api')->id() ?: 0;
+        $user_id = auth('api')->id();
         $params = array_merge($request->all(), ['user_id' => $user_id]);
         $project = Project::create($params);
         return $this->response()->item($project, $projectTransformer);
@@ -30,6 +30,8 @@ class ProjectController extends Controller
 
     public  function status(Project $project, Request $request)
     {
+        $this->canHandle($project);
+
         $project->status = $request->status;
         $project->close_reason = $request->close_reason;
         $project->save();
@@ -39,7 +41,16 @@ class ProjectController extends Controller
 
     public  function delete(Project $project)
     {
+        $this->canHandle($project);
         $project->delete();
         return $this->response()->noContent();
+    }
+
+    protected function canHandle(Project $project)
+    {
+        if ($project->user_id == request()->user_id || request()->is_super){
+            return true;
+        }
+        abort(403, '没有权限进行此操作');
     }
 }
