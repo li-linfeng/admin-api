@@ -38,6 +38,7 @@ class SaleRequestController extends Controller
     {
         $data = $request->all();
         $data['user_id'] = auth('api')->id() ?: 0;
+        $data['project_id'] =  $request->project_id ?:0;
         $sale =  SaleRequest::create($data);
         $ids = explode(",", $request->upload_ids);
         Upload::whereIn('id',  $ids)->update(['source_id' => $sale->id]);
