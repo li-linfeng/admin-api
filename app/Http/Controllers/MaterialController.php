@@ -42,7 +42,12 @@ class MaterialController extends Controller
       Material::where(function($q) use($request){
         $q->where('type', '=','single-component')
           ->orWhere(function($query) use($request){
-                $query->where('type', '!=','assembly')
+                $query->when( $request->type == 'sub-assembly',
+                        function($sq){
+                            $sq->where('type', 'component');
+                       },function($sq){
+                        $sq->whereIn('type', ['component', 'sub-assembly']);
+                       })
                       ->Where('category_id',$request->filter_category_id);
             });
       })
@@ -53,12 +58,16 @@ class MaterialController extends Controller
             foreach ($items as $material){
                 $data[$key]['children'][] = [
                     'id'           => $material->id,
-                    'label'        => $material->label,
+                    'label'        => $material->description,
                     'description'  => $material->description,
                     'has_children' => $material->has_children,
                 ];
             }
         });
+
+        if ($request->type == 'sub-assembly'){
+            unset($data['sub-assembly']);
+        }
         return $this->response()->array(['tree'=>array_values($data),'category'=> $category]);
     }
 

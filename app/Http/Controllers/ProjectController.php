@@ -48,7 +48,7 @@ class ProjectController extends Controller
 
     protected function canHandle(Project $project)
     {
-        if ($project->user_id == request()->user_id || request()->is_super){
+        if ($project->user_id == request()->user_info['user_id'] ||request()->user_info['is_super']){
             return true;
         }
         abort(403, '没有权限进行此操作');

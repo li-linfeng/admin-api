@@ -69,8 +69,8 @@ class OrderController extends Controller
     {
         $filter = $request->only('filter_status');
         $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
+        $filter['filter_display'] = 1;
         $paginator = Order::filter($filter)
-            ->where('user_id', auth('api')->id())
             ->with(['orderItems.saleRequest', 'uploads','orderItems.user','orderItems.handler'])
             ->withCount('orderItems')
             ->paginate($request->input('per_page', 10));

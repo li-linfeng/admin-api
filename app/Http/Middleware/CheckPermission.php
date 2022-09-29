@@ -26,8 +26,11 @@ class CheckPermission
         $route = request()->route()->getName();
         //判断是否拥有超级管理员权限
         if (in_array('*', $result) || in_array( $route, $result)){
-            $request->is_super =  in_array('*', $result);
-            $request->user_id =  $user->id;
+            $request->user_info =[
+                'user_id'  => $user->id,
+                'is_super' => in_array('*', $result),
+                'roles'    => $user->roles->pluck('name')->toArray()
+            ];
             return $next($request);
         }
         abort(403, '无此权限，请联系管理员');

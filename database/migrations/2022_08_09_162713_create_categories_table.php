@@ -20,7 +20,6 @@ class CreateCategoriesTable extends Migration
             $table->string("type")->comment("type")->default('');
             $table->string("code")->comment("series_code")->default('');
             $table->string("description")->comment("描述")->default('');
-            $table->integer("handler_id")->comment("处理用户id")->default(0);
             $table->timestamps();
         });
     }

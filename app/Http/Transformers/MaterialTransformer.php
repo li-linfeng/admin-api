@@ -10,6 +10,9 @@ class MaterialTransformer extends BaseTransformer
     protected $availableIncludes = ['children'];
 
 
+    public $level = 1;
+
+
     public function transform(Material $material)
     {
         $route = request()->route()->getName();
@@ -24,8 +27,9 @@ class MaterialTransformer extends BaseTransformer
                     'category_id' => $material->category_id,
                     'key'         => $material->label.uniqid(),
                     'status'      => $material->status,
-                    'amount'      => $material->pivot ?  $material->pivot->amount: 0,
+                    'amount'      => $material->pivot ?  $material->pivot->amount: "",
                     'label'       => $material->label,
+                    'level'       => $this->level,
                 ];
             default :
                 return  [
@@ -45,6 +49,8 @@ class MaterialTransformer extends BaseTransformer
         if ($material->children->isEmpty()) {
             return $this->null();
         }
-        return $this->collection($material->children, new MaterialTransformer(), 'flatten');
+        $transformer = new MaterialTransformer();
+        $transformer->level = $this->level +1;
+        return $this->collection($material->children, $transformer , 'flatten');
     }
 }

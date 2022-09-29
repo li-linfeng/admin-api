@@ -14,11 +14,14 @@ class CategoryTransformer extends BaseTransformer
     {
        return  [
             'id'          => $category->id,
+            'category_id' => $category->id,
             'name'        => $category->name,
             'code'        => $category->code,
             'description' => $category->description,
             'type'        => 'category',
-            'key'         => $category->name.uniqid()
+            'key'         => $category->name.uniqid(),
+            'amount'      => '',
+            'level'       => 0,
         ];
     }
 

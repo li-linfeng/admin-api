@@ -14,6 +14,7 @@ class OrderItemController extends Controller
 {
     public function finish(OrderItem $orderItem)
     {
+        $this->canHandle($orderItem);
         if(!$orderItem->material_number){
             abort(422, '请先绑定物料号');
         }
@@ -35,6 +36,7 @@ class OrderItemController extends Controller
     
     public function bindMaterial(OrderItem $orderItem , Request $request)
     {
+        // $this->canHandle($orderItem);
         $orderItem->update(['material_number' => $request->material_number]);
         return  $this->response()->noContent();
     }
@@ -42,6 +44,7 @@ class OrderItemController extends Controller
 
     public function download(OrderItem $orderItem )
     {
+        $this->canHandle($orderItem);
         //获取关联的文件
         $materials = Material::where('label', $orderItem->material_number)
         ->with([ 'children.files','children.children.files'])
@@ -85,5 +88,14 @@ class OrderItemController extends Controller
         //最后删除 其他文件
         Storage::disk('public')->deleteDirectory($path);
         return Storage::disk('public')->download('zips/'.$product_name.'.zip');
+    }
+
+
+    protected function canHandle(OrderItem $item)
+    {
+        if ($item->handler->id == request()->user_info['user_id'] ||request()->user_info['is_super']){
+            return true;
+        }
+        abort(403, '没有权限进行此操作');
     }
 }

@@ -35,8 +35,8 @@ class PreSaleController extends Controller
     {
         $filter = $request->only('filter_status');
         $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
+        $filter['filter_display'] = 1;
         $data = PreSaleRequest::filter($filter)
-            ->where('user_id', auth('api')->id())
             ->with(['uploads', 'saleRequest.uploads', 'user', 'handler'])
             ->paginate($request->input('per_page', 10));
 
@@ -59,7 +59,7 @@ class PreSaleController extends Controller
 
     protected function canHandle(PreSaleRequest $preRequest)
     {
-        if ($preRequest->handler->id == request()->user_id || request()->is_super){
+        if ($preRequest->handler->id ==  request()->user_info['user_id'] ||request()->user_info['is_super']){
             return true;
         }
         abort(403, '没有权限进行此操作');

@@ -53,7 +53,7 @@ class PreSaleRequest extends Model
 
     public function handler()
     {
-        return $this->hasOneThrough(User::class, Category::class, 'name', 'id', 'category', 'handler_id' );
+        return $this->hasOneThrough(User::class, Handler::class, 'product_type', 'id', 'category', 'handler_id' )->where('handlers.module', 'api.preSales');
     }
    
 

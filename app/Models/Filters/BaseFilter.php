@@ -52,4 +52,17 @@ trait BaseFilter
         }
         return $this->builder->where('status', $status);
     }
+
+    public function filterDisplay()
+    {
+        //判断是不是工程人员
+        if(in_array('工程人员',request()->user_info['roles']) || request()->user_info['is_super'] ){
+            return ;
+        }
+        if(in_array('销售人员',request()->user_info['roles'])){
+            return $this->builder->where('user_id', request()->user_info['user_id']);
+        }
+
+        return $this->builder->where('user_id', 0);
+    }
 }

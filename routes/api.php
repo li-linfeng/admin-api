@@ -83,9 +83,9 @@ $api->version('v1', [
         $api->post('/orders', 'OrderController@store')->name('api.order.store')->permissions("订单:新增订单");
         $api->get('/orders', 'OrderController@list')->name('api.order.list')->permissions("订单:订单列表");
 
-        $api->post('/order_items/{orderItem}/finish', 'OrderItemController@finish')->name('api.orderItem.finish')->permissions("订单:完成订单需求");
-        $api->post('/order_items/{orderItem}/bind', 'OrderItemController@bindMaterial')->name('api.orderItem.bind')->permissions("订单:绑定物料号");
-        $api->get('/order_items/{orderItem}/download', 'OrderItemController@download')->name('api.orderItem.download')->permissions("订单:下载Boom图纸");
+        $api->post('/order_items/{orderItem}/finish', 'OrderItemController@finish')->name('api.order.finish')->permissions("订单:完成订单需求");
+        $api->post('/order_items/{orderItem}/bind', 'OrderItemController@bindMaterial')->name('api.order.bind')->permissions("订单:绑定物料号");
+        $api->get('/order_items/{orderItem}/download', 'OrderItemController@download')->name('api.order.download')->permissions("订单:下载Boom图纸");
 
         $api->post('/upload', 'UploadController@upload')->name('api.upload.upload')->permissions("附件上传:附件上传");
 
@@ -101,5 +101,9 @@ $api->version('v1', [
         $api->post('users', 'UserController@store')->name('api.users.store')->permissions("用户管理:新增用户");
         $api->put('users/{user}', 'UserController@update')->name('api.users.update')->permissions("用户管理:編輯用戶");
         $api->delete('users/{user}', 'UserController@delete')->name('api.users.delete')->permissions("用户管理:删除用户");
+
+
+        $api->get('handlers', 'HandlerController@index')->name('api.handlers.index')->permissions("处理人管理:处理人列表");
+        $api->put('handlers/{handler}/user', 'HandlerController@setHandler')->name('api.handlers.set_user')->permissions("处理人管理:设置处理人");
     });
 });
