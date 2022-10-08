@@ -36,7 +36,7 @@ class OrderItemController extends Controller
     
     public function bindMaterial(OrderItem $orderItem , Request $request)
     {
-        // $this->canHandle($orderItem);
+        $this->canHandle($orderItem);
         $orderItem->update(['material_number' => $request->material_number]);
         return  $this->response()->noContent();
     }

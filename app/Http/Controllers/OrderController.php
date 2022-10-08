@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\OrderExport;
 use App\Http\Transformers\OrderItemTransformer;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -9,7 +10,7 @@ use App\Models\PreSaleRequest;
 use App\Models\Upload;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
@@ -46,6 +47,7 @@ class OrderController extends Controller
                 'sale_num'      => $item->sale_num,
                 'amount'        => $items[$item->id],
                 'product_type'  => $item->product_type,
+                'category_name' => $item->category,
                 'product_price' => $item->product_price,
                 'pre_pay'       => $item->pre_pay,
                 'product_date'  => $item->product_date,
@@ -99,5 +101,32 @@ class OrderController extends Controller
                 'total_pages' => $paginator->lastPage()
             ]
         ]);
+    }
+
+    public function download(Request $request)
+    {
+        $filter = $request->only('filter_status');
+        $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
+        $filter['filter_display'] = 1;
+        $data = Order::filter($filter)
+            ->with(['orderItems.saleRequest','orderItems.user','orderItems.handler'])
+            ->withCount('orderItems')
+            ->get();
+
+        $result = [];
+
+        foreach ($data as $item) {
+            $items = $item->orderItems;
+            unset($item->orderItems);
+            foreach ($items as $k => $sale) {
+                $sale->is_start = 0;
+                if ($k == 0) {
+                    $sale->is_start = 1;
+                }
+                $sale->order = $item;
+                $result[] = $sale;
+            }
+        }
+        return Excel::download(new OrderExport($result), 'order.xlsx');
     }
 }

@@ -17,4 +17,15 @@ trait OrderItemFilter
             $query->where('username', 'like', "%{$name}%");
         });
     }
+
+    public function filterHandler($name = '')
+    {
+        if (!$name){
+            return ;
+        }
+
+        return $this->builder->whereHas('handler', function($query) use ($name){
+            $query->where('username', 'like', "%{$name}%");
+        });
+    }
 }

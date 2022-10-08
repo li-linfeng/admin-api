@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProjectExport;
 use App\Http\Requests\ProjectRequest;
 use App\Http\Transformers\ProjectTransformer;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProjectController extends Controller
 {
@@ -52,5 +54,14 @@ class ProjectController extends Controller
             return true;
         }
         abort(403, '没有权限进行此操作');
+    }
+
+    public function download(Request $request)
+    {
+        $filter = $request->only('filter_status');
+        $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
+        $projects = Project::with(['user'])->filter($filter)->OrderByDesc("created_at")->get();
+
+        return Excel::download(new ProjectExport($projects), 'project.xlsx');
     }
 }

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SaleRequestExport;
 use App\Http\Requests\SaleRqRequest;
 use App\Http\Transformers\SaleRequestTransformer;
 use App\Models\PreSaleRequest;
 use App\Models\SaleRequest;
 use App\Models\Upload;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SaleRequestController extends Controller
 {
@@ -94,4 +96,14 @@ class SaleRequestController extends Controller
         abort(403, '没有权限进行此操作');
     }
 
+    
+    public function download(Request $request)
+    {
+        $filter = $request->only('filter_status');
+        $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
+        $saleRequests = SaleRequest::filter($filter)
+        ->with(['uploads', 'user', 'handler'])
+        ->get();
+        return Excel::download(new SaleRequestExport($saleRequests), 'sale_request.xlsx');
+    }
 }

@@ -50,7 +50,6 @@ class SaleRequest extends Model
 
     public function handler()
     {
-        // return $this->hasOneThrough(User::class, Category::class, 'name', 'id', 'product_type', 'handler_id' );
         return $this->hasOneThrough(User::class, Handler::class, 'product_type', 'id', 'product_type', 'handler_id' )->where('handlers.module', 'api.sale_requests');
     }
 

@@ -24,4 +24,15 @@ trait HandlerFilter
         }
         return $this->builder->where('product_type', $type);
     }
+
+    // 类型
+    public function filterName($name = '')
+    {
+        if (!$name) {
+            return;
+        }
+        return $this->builder->where(function ($q) use ($name) {
+            $q->where('username', 'like',"%{$name}%")->orWhere('email', 'like',"%{$name}%");
+        });
+    }
 }

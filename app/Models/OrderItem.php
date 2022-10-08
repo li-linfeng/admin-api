@@ -23,11 +23,16 @@ class OrderItem extends Model
         return $this->belongsTo(User::class, "user_id", "id");
     }
 
+    protected $statusArr = [
+        "open"   => "待处理",
+        "finish" => "完成",
+    ];
+
 
     //工厂的处理人
     public function handler()
     {
-        return $this->hasOneThrough(User::class, Handler::class, 'product_type', 'id', 'material_number', 'handler_id' )->where('handlers.module', 'api.order');
+        return $this->hasOneThrough(User::class, Handler::class, 'product_type', 'id', 'category_name', 'handler_id' )->where('handlers.module', 'api.order');
     }
 
     public function order()
@@ -45,6 +50,11 @@ class OrderItem extends Model
     public function setProductPriceAttribute($value)
     {
         $this->attributes['product_price'] = str_replace(",", "", $value);
+    }
+
+    public function getStatusCnAttribute()
+    {
+        return $this->statusArr[$this->status];
     }
 
 }

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PreSaleExport;
 use App\Http\Transformers\PreSaleRequestTransformer;
 use App\Models\PreSaleRequest;
 use App\Models\SaleRequest;
 use App\Models\Upload;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PreSaleController extends Controller
 {
@@ -63,5 +65,18 @@ class PreSaleController extends Controller
             return true;
         }
         abort(403, '没有权限进行此操作');
+    }
+
+     
+    public function download(Request $request)
+    {
+        $filter = $request->only('filter_status');
+        $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
+        $filter['filter_display'] = 1;
+        $data = PreSaleRequest::filter($filter)
+            ->with(['saleRequest', 'user', 'handler'])
+            ->get();
+            
+        return Excel::download(new PreSaleExport($data), 'pre_sale.xlsx');
     }
 }
