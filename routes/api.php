@@ -109,5 +109,11 @@ $api->version('v1', [
 
         $api->get('handlers', 'HandlerController@index')->name('api.handlers.index')->permissions("处理人管理:处理人列表");
         $api->put('handlers/{handler}/user', 'HandlerController@setHandler')->name('api.handlers.set_user')->permissions("处理人管理:设置处理人");
+
+        $api->get('news', 'NewsController@index')->name('api.news.index')->permissions("每日要闻:每日要闻列表");
+        $api->put('news/{news}', 'NewsController@update')->name('api.news.update')->permissions("每日要闻:每日要闻编辑");
+        $api->post('news', 'NewsController@store')->name('api.news.store')->permissions("每日要闻:每日要闻新增");
+        $api->delete('news/{news}', 'NewsController@delete')->name('api.news.delete')->permissions("每日要闻:每日要闻删除");
+        $api->get('news/{news}', 'NewsController@show')->name('api.news.show')->permissions("每日要闻:每日要闻详情");
     });
 });
