@@ -7,6 +7,7 @@ use App\Http\Requests\SaleRqRequest;
 use App\Http\Transformers\SaleRequestTransformer;
 use App\Models\PreSaleRequest;
 use App\Models\SaleRequest;
+use App\Models\Todo;
 use App\Models\Upload;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -85,6 +86,15 @@ class SaleRequestController extends Controller
         //生成一条
         PreSaleRequest::where('sale_num', $request->sale_num)->delete();
         PreSaleRequest::create(['sale_num' => $request->sale_num, 'user_id' => $user_id, 'category' => $request->product_type]);
+        //插入一条退回代办
+        if($request->handler){
+            Todo::create([
+                'content'   => "编号为{$request->sale_num}的需求待处理",
+                'type'      => 'pre_sale',
+                'user_id'   => $request->handler->id,
+                'source_id' => $request->sale_num
+            ]);
+        }
         return $this->response()->noContent();
     }
 

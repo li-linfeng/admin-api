@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Exports\MaterialExport;
+use App\Models\Handler;
 use App\Models\Material;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Todo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -24,6 +26,19 @@ class OrderItemController extends Controller
 
         $total = OrderItem::where('order_id', $orderItem->order_id)->count();
         $finished = OrderItem::where('order_id', $orderItem->order_id)->where('status', 'finish')->count();
+
+         //
+         $handler = Handler::where('product_type', $orderItem->category_name)->first();
+
+         if (optional($handler)->user_id){
+             //插入代办
+             Todo::create([
+                 'content'   => "编号{$orderItem->order->order_num}的订单中需求编号{$orderItem->saleRequest->sale_num}的项目待处理",
+                 'type'      => 'order',
+                 'user_id'   => optional($handler)->user_id,
+                 'source_id' => $orderItem->order->order_num
+             ]); 
+         }
         
         if ($total == $finished){
             Order::find($orderItem->order_id)->update(['status' => 'finish']);
@@ -93,7 +108,7 @@ class OrderItemController extends Controller
 
     protected function canHandle(OrderItem $item)
     {
-        if ($item->handler->id == request()->user_info['user_id'] ||request()->user_info['is_super']){
+        if (optional($item->handler)->id== request()->user_info['user_id'] ||request()->user_info['is_super']){
             return true;
         }
         abort(403, '没有权限进行此操作');

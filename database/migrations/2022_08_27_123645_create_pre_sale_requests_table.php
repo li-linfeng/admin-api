@@ -23,7 +23,7 @@ class CreatePreSaleRequestsTable extends Migration
             $table->string('product_date')->default("")->comment("产品货期");
             $table->text('remark')->nullable()->comment("备注");
             $table->integer('user_id')->default(0)->comment("处理工程师id");
-            $table->string('status')->default("open")->comment("状态， published, return, finish");
+            $table->string('status')->default("published")->comment("状态， published, return, finish");
             $table->text('return_reason')->nullable()->comment("退回原因");
             $table->string('expired_at')->default("")->comment("价格有效期");
             $table->timestamps();

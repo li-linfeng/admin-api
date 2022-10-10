@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Exports\OrderExport;
 use App\Http\Transformers\OrderItemTransformer;
+use App\Models\Handler;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PreSaleRequest;
+use App\Models\Todo;
 use App\Models\Upload;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -41,8 +43,17 @@ class OrderController extends Controller
         foreach($request->items as $v){
             $items[$v['id']] = $v['count'];
         }
-
         $orderItems = PreSaleRequest::whereIn('id', array_keys($items))->get()->map(function ($item) use ($order, $items) {
+            $handler = Handler::where('product_type', $item->category)->first();
+            if (optional($handler)->handler_id){
+                //插入代办
+                Todo::create([
+                    'content'   => "编号{$order->order_num}的订单中需求编号{$item->sale_num}的项目待处理",
+                    'type'      => 'order',
+                    'user_id'   => optional($handler)->handler_id,
+                    'source_id' => $order->order_num
+                ]); 
+            }
             return [
                 'sale_num'      => $item->sale_num,
                 'amount'        => $items[$item->id],
@@ -53,9 +64,13 @@ class OrderController extends Controller
                 'product_date'  => $item->product_date,
                 'user_id'       => $item->user_id,
                 'status'        => 'open',
-                'order_id'       => $order->id,
+                'order_id'       => $order->id, 
                 'created_at'    => Carbon::now()->toDateTimeString(),
             ]; 
+
+            //
+           
+
         })->toArray();
         OrderItem::insert($orderItems);
 

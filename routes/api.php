@@ -110,10 +110,15 @@ $api->version('v1', [
         $api->get('handlers', 'HandlerController@index')->name('api.handlers.index')->permissions("处理人管理:处理人列表");
         $api->put('handlers/{handler}/user', 'HandlerController@setHandler')->name('api.handlers.set_user')->permissions("处理人管理:设置处理人");
 
-        $api->get('news', 'NewsController@index')->name('api.news.index')->permissions("每日要闻:每日要闻列表");
-        $api->put('news/{news}', 'NewsController@update')->name('api.news.update')->permissions("每日要闻:每日要闻编辑");
-        $api->post('news', 'NewsController@store')->name('api.news.store')->permissions("每日要闻:每日要闻新增");
-        $api->delete('news/{news}', 'NewsController@delete')->name('api.news.delete')->permissions("每日要闻:每日要闻删除");
-        $api->get('news/{news}', 'NewsController@show')->name('api.news.show')->permissions("每日要闻:每日要闻详情");
+        $api->get('news', 'NewsController@index')->name('api.dashboard.news_index')->permissions("首页:每日要闻列表");
+        $api->put('news/{news}', 'NewsController@update')->name('api.dashboard.news_update')->permissions("首页:每日要闻编辑");
+        $api->post('news', 'NewsController@store')->name('api.dashboard.news_store')->permissions("首页:每日要闻新增");
+        $api->delete('news/{news}', 'NewsController@delete')->name('api.dashboard.news_delete')->permissions("首页:每日要闻删除");
+        $api->get('news/{news}', 'NewsController@show')->name('api.dashboard.news_show')->permissions("首页:每日要闻详情");
+
+        $api->get('weather', 'WeatherController@weather')->name('api.dashboard.weather')->permissions("首页:首页天气");
+        $api->get('todo', 'WeatherController@todo')->name('api.dashboard.todo')->permissions("首页:每日代办");
+        $api->put('todo/{todo}/read', 'WeatherController@read')->name('api.dashboard.read')->permissions("首页:每日代办已读");
+        $api->post('todo/readAll', 'WeatherController@readAll')->name('api.dashboard.read_all')->permissions("首页:每日代办全部已读");
     });
 });

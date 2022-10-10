@@ -6,6 +6,7 @@ use App\Exports\PreSaleExport;
 use App\Http\Transformers\PreSaleRequestTransformer;
 use App\Models\PreSaleRequest;
 use App\Models\SaleRequest;
+use App\Models\Todo;
 use App\Models\Upload;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -15,6 +16,7 @@ class PreSaleController extends Controller
     //
     public function update(PreSaleRequest $request, Request $req)
     {
+    
         $this->canHandle($request);
         $params = app('request')->only([
             'product_type',
@@ -55,13 +57,26 @@ class PreSaleController extends Controller
             $request->return_reason = $req->input('return_reason'); 
             $request->save();
         }
+
+        $content = $req->status == 'return' ? "编号为{$request->sale_num}的需求被退回，请修改后重新发布" : "您创建的编号为{$request->sale_num}的需求已完成";
+        $type = $req->status == 'return' ? "sale_request" : "pre_sale";
+        Todo::create([
+            'content'   => $content,
+            'type'      => $type,
+            'user_id'   => $request->user_id,
+            'source_id' => $request->sale_num
+        ]); 
+
+        if ($req->status == 'finish'){
+            
+        }
         SaleRequest::where('sale_num', $request->sale_num)->update(['status' => $req->status]);
         return $this->response()->noContent();
     }
 
     protected function canHandle(PreSaleRequest $preRequest)
     {
-        if ($preRequest->handler->id ==  request()->user_info['user_id'] ||request()->user_info['is_super']){
+        if (optional($preRequest->handler)->id ==  request()->user_info['user_id'] ||request()->user_info['is_super']){
             return true;
         }
         abort(403, '没有权限进行此操作');
