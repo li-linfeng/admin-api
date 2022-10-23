@@ -20,8 +20,9 @@ class CategoryTransformer extends BaseTransformer
             'description' => $category->description,
             'type'        => 'category',
             'key'         => $category->name.uniqid(),
-            'amount'      => '',
+            'amount'      => '---',
             'level'       => 0,
+            'index'       => $category->seq,
         ];
     }
 

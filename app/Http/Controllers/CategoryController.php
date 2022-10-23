@@ -12,17 +12,15 @@ class CategoryController extends Controller
     {
         $categories = [];
         $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
-        $categories = Category::filter($filter)->with(['children.children.children', 'handler'])->get();
-        return $this->response->collection($categories, $categoryTransformer, [], function($resource, $fractal){
-            $fractal->parseIncludes(['handler','children.children.children']);
+        $categories = Category::filter($filter)->with(['children.children.children'])->get()->map(function($item, $index){          
+            $letters = ['A','B','C','D','E','F'];
+            $item->seq =  $letters[$index];
+            $item->children = makeSeq($item->children);
+            return $item;
         });
-    }
-
-
-
-    public function setHandler(Category $category,Request $request)
-    {
-        $category->update(['handler_id' => $request->handler_id]);
-        return $this>response()->noContent();
+     
+        return $this->response->collection($categories, $categoryTransformer, [], function($resource, $fractal){
+            $fractal->parseIncludes(['children.children.children']);
+        });
     }
 }

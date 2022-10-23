@@ -23,24 +23,19 @@ use Illuminate\Support\Facades\DB;
 */
 
 Artisan::command('init', function () {
-    $prefix = 'HN';
-    $types = ['C','G','S'];
-    $series_codes = ['TL-Torque Limiter','GD-Grid','GR-Gear','DC-Disc','JW-Jaw','FE-Flexible','HB-Wrapflex','TE-Tyre','WD-Wind','CE-Composite','RB-RUBBER BUFFER'];
+   $types = ['HNCTL','HNCGD','HNCFE','HNCGR','HNCWD'];
 
     $data = [];
     foreach($types as $type){
-        foreach($series_codes as $code){
-            $item = explode("-", $code);
-            $data[] = [
-                'name'        => $prefix.$type.$item[0],
-                'name_cn'     => $prefix.$type.$item[0],
-                'description' => $item[1],
-                'type'        => $type,
-                'code'        => $item[0],
-                'created_at'  => Carbon::now()->toDateTimeString(),
-                'updated_at'  => Carbon::now()->toDateTimeString()
-            ];
-        }
+        $data[] = [
+            'name'        => $type,
+            'name_cn'     => $type,
+            'description' => $type,
+            'type'        => $type,
+            'code'        => $type,
+            'created_at'  => Carbon::now()->toDateTimeString(),
+            'updated_at'  => Carbon::now()->toDateTimeString()
+        ];
     }
     $data[]= [
         'name'        => 'HNXXX',

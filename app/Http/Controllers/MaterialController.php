@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Transformers\MaterialTransformer;
 use App\Models\Category;
 use App\Models\Material;
 use App\Models\MaterialRel;
 use App\Models\Upload;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class MaterialController extends Controller
 {
  
     public function tree(Request $request )
     {
-
         $category = Category::find($request->filter_category_id);
         $data = [
             'sub-assembly' =>
@@ -52,7 +49,6 @@ class MaterialController extends Controller
             });
       })
         ->where('id','!=', $request->material_id)
-        ->where('is_show', 1)
         ->get()
         ->groupBy('type')->map(function($items, $key)use (&$data){
             foreach ($items as $material){
@@ -95,14 +91,13 @@ class MaterialController extends Controller
         return $this->response()->noContent();
     }
 
-    public function update(Material $material, Request $request)
+    public function store(Request $request)
     {
-        $params = $request->only(['has_child','description']);
-        $params['is_show'] = 1;
+        $params = $request->only(['has_child','description','category_id','type','label', 'property']);
         if ($request->has_child ==0){
             $params['status'] = 1;
         }
-        $material->update($params);
+       $material =  Material::create($params);
         //更新文件
         $file_ids = explode(",", $request->file_ids);
 
@@ -112,25 +107,4 @@ class MaterialController extends Controller
         return $this->response()->noContent();
     }
 
-    public function getMaterialSeq(Request $request, MaterialTransformer $materialTransformer)
-    {
-        $category = Category::findOrFail($request->category_id);
-        DB::beginTransaction();
-        $seq = Material::select(DB::raw('max(seq)+1 as number'))->where('category_id', $category->id)->lockForUpdate()->value('number');
-        $seq = $seq ?:1;
-        $type_map = [
-            'assembly'     => 3,
-            'component'    => 2,
-            'sub-assembly' => 1,
-        ];
-        $type = $request->type == 'single-component' ?  '' : $type_map[$request->type];
-        $material = Material::create([
-            'seq'         => $seq,
-            'category_id' => $request->category_id,
-            'label'       => $category->name.$type.str_pad($seq,4,'0',STR_PAD_LEFT),
-            'type'        => $request->type,
-        ]);
-        DB::commit();
-        return $this->response()->item($material, $materialTransformer);
-    }
 }

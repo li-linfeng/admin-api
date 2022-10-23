@@ -164,3 +164,20 @@ if (!function_exists('formatMoney')) {
         return $num ? number_format($num,$decimal) : 0;
     }
 }
+
+
+if (!function_exists('makeSeq')) {
+    function makeSeq($data, $prefix = '')
+    {
+        if (!count($data)){
+            return $data;
+        }
+        foreach($data as $k => &$child){
+            $index           = $k +1;
+            $seq             = $prefix  ? $prefix.'.'. $index:  $index;
+            $child->index    = $seq;
+            $child->children = makeSeq($child->children, $seq);
+        }   
+       return $data;
+    }
+}

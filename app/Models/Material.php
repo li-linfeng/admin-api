@@ -13,9 +13,6 @@ class Material extends Model
 
     protected $guarded = [];
 
-    public function  getSeqAttribute($val) {
-        return str_pad($val,4,'0',STR_PAD_LEFT);
-    }
 
     public function children()
     {

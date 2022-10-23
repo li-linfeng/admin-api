@@ -14,6 +14,7 @@ class ProjectTransformer extends BaseTransformer
         return [
             'id'               => $project->id,
             'name'             => $project->name,
+            'project_no'       => $project->project_no,
             'customer_name'    => $project->customer_name,
             'product_name'     => $project->product_name,
             'project_time'     => $project->project_time,
@@ -22,7 +23,8 @@ class ProjectTransformer extends BaseTransformer
             'status'           => $project->status,
             'status_cn'        => $project->status_cn,
             'created_at'       => $project->created_at->toDateTimeString(),
-            'close_reason'     =>  $project->close_reason
+            'close_reason'     => $project->close_reason,
+            'compare_info'     => $project->compare_info
         ];
     }
 

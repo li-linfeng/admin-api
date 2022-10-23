@@ -15,9 +15,9 @@ class CreateSaleRequestsTable extends Migration
     {
         Schema::create('sale_requests', function (Blueprint $table) {
             $table->id();
-            $table->integer("project_id")->default(0)->comment("项目编号");
-            $table->string("sale_num")->default("")->comment("需求编号");
+            $table->string("project_no")->default("")->comment("项目编号");
             $table->string("product_type")->default("")->comment("产品类型");
+            $table->string("handle_type")->default("")->comment("第一个产品类型");
             $table->string("customer_type")->default("")->comment("客户性质");
             $table->string("device_name")->nullable()->default("")->comment("设备名称");
             $table->string("driver_type")->nullable()->default("")->comment("驱动类型");

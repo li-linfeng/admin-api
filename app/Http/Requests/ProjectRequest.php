@@ -23,6 +23,7 @@ class ProjectRequest extends FormRequest
     public function rules()
     {
         return [
+            "project_no"    => "required",
             "name"          => "required",
             "customer_name" => "required",
             "product_name"  => "required"

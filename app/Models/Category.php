@@ -18,9 +18,4 @@ class Category extends Model
     {
         return $this->hasMany(Material::class, "category_id", "id")->whereIn('type', ['assembly','single-component']);
     }
-
-    public function handler()
-    {
-        return $this->hasOne(User::class, 'id', 'handler_id');
-    }
 }

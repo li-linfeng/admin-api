@@ -27,7 +27,8 @@ class ProjectExport implements FromCollection
     protected function createData()
     {
         $header = [[
-            '编号',
+            '序号',
+            '项目编号',
             '项目名称',
             '客户名',
             '项目节点',
@@ -36,11 +37,12 @@ class ProjectExport implements FromCollection
             '需求创建时间',
             '创建人',
             '状态',
-            '关闭订单原因'
+            '关闭订单原因',
         ]];
         $data = collect($this->data)->map(function ($item) {
            return  [
                 'id'               => $item->id,
+                'project_no'       => $item->project_no,
                 'name'             => $item->name,
                 'customer_name'    => $item->customer_name,
                 'project_duration' => $item->project_duration,

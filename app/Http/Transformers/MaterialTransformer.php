@@ -27,9 +27,9 @@ class MaterialTransformer extends BaseTransformer
                     'category_id' => $material->category_id,
                     'key'         => $material->label.uniqid(),
                     'status'      => $material->status,
-                    'amount'      => $material->pivot ?  $material->pivot->amount: "",
+                    'amount'      => $material->pivot ?  $material->pivot->amount: "---",
                     'label'       => $material->label,
-                    'level'       => $this->level,
+                    'index'       => $material->index,
                 ];
             default :
                 return  [
@@ -50,7 +50,6 @@ class MaterialTransformer extends BaseTransformer
             return $this->null();
         }
         $transformer = new MaterialTransformer();
-        $transformer->level = $this->level +1;
         return $this->collection($material->children, $transformer , 'flatten');
     }
 }

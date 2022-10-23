@@ -14,13 +14,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class SaleRequestController extends Controller
 {
-    public function getUniqueId()
-    {
-        return $this->response()->array([
-            'uuid' => date("Ymd") . uniqid()
-        ]);
-    }
-
 
     public function list(Request $request, SaleRequestTransformer $transformer)
     {
@@ -41,7 +34,9 @@ class SaleRequestController extends Controller
     {
         $data = $request->all();
         $data['user_id'] = auth('api')->id() ?: 0;
-        $data['project_id'] =  $request->project_id ?:0;
+        $types = explode(",",$request->product_type);
+        $data['handle_type'] = $types?$types[0]:"";
+
         $sale =  SaleRequest::create($data);
         $ids = explode(",", $request->upload_ids);
         Upload::whereIn('id',  $ids)->update(['source_id' => $sale->id]);
@@ -53,6 +48,8 @@ class SaleRequestController extends Controller
         $this->canHandle($request);
         $params = $saleRqRequest->all();
         $params['status'] = 'open';
+        $types = explode(",",$request->product_type);
+        $params['handle_type'] = $types ? $types[0]: "";
         $request->update( $params);
 
         Upload::where('source_type', 'sale_request')->where('source_id', $saleRqRequest->id)->update(['source_id' => 0]);
