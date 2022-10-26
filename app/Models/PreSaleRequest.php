@@ -11,7 +11,8 @@ class PreSaleRequest extends Model
     use HasFactory, PreSaleFilter;
 
     protected $fillable = [
-        'sale_num',
+        'sale_id',
+        'project_no',
         'product_type',
         'product_price',
         'pre_pay',

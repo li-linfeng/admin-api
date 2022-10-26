@@ -12,9 +12,7 @@ class SaleRequest extends Model
     use HasFactory, SaleRequestFilter;
 
     protected $fillable = [
-        'project_id',
         'product_type',
-        'customer_type',
         'device_name',
         'driver_type',
         'driver_power',
@@ -27,16 +25,23 @@ class SaleRequest extends Model
         'shaft_space_distance',
         'remark',
         'user_id',
-        'sale_num',
         'expect_time',
         'status',
+        'handle_type',
+        'project_no',
     ];
     protected $statusArr = [
-        "open"      => "销售",
+        "open"      => "占用",
         "published" => "处理",
         "return"    => "退回",
         "finish"    => "完成",
     ];
+
+    public function project()
+    {
+        return $this->hasOne(Project::class, 'project_no', 'project_no');
+    }
+
 
     public function uploads()
     {
@@ -50,7 +55,7 @@ class SaleRequest extends Model
 
     public function handler()
     {
-        return $this->hasOneThrough(User::class, Handler::class, 'product_type', 'id', 'product_type', 'handler_id' )->where('handlers.module', 'api.sale_requests');
+        return $this->hasOneThrough(User::class, Handler::class, 'product_type', 'id','handle_type', 'handler_id' )->where('handlers.module', 'api.sale_requests');
     }
 
 

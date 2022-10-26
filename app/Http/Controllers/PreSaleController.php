@@ -16,7 +16,6 @@ class PreSaleController extends Controller
     //
     public function update(PreSaleRequest $request, Request $req)
     {
-    
         $this->canHandle($request);
         $params = app('request')->only([
             'product_type',

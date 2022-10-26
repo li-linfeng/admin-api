@@ -16,6 +16,7 @@ class SaleRequestTransformer extends BaseTransformer
             'id'                           => $saleRequest->id,
             'sale_num'                     => $saleRequest->sale_num,
             'product_type'                 => $saleRequest->product_type,
+            'product_type_arr'             => explode(",",$saleRequest->product_type),
             'customer_type'                => $saleRequest->customer_type,
             'device_name'                  => $saleRequest->device_name,
             'driver_type'                  => $saleRequest->driver_type,
@@ -34,7 +35,7 @@ class SaleRequestTransformer extends BaseTransformer
             'created_at'                   => $saleRequest->created_at->toDateTimeString(),
             'user_id'                      => $saleRequest->user_id,
             'expect_time'                  => $saleRequest->expect_time,
-            'project_id'                   => $saleRequest->project_id,
+            'project_no'                   => $saleRequest->project_no,
         ];
     }
 

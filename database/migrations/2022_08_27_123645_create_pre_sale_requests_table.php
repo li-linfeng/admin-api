@@ -14,8 +14,8 @@ class CreatePreSaleRequestsTable extends Migration
     public function up()
     {
         Schema::create('pre_sale_requests', function (Blueprint $table) {
-            $table->id();
-            $table->string('sale_num')->default("")->comment("关联销售需求编码");
+            $table->id(); 
+            $table->string('project_no')->default("")->comment("工程编号");
             $table->string('product_type')->default("")->comment("产品型号");
             $table->string('category')->default("")->comment("产品所属类型");
             $table->string('product_price')->default("")->comment("产品价格");

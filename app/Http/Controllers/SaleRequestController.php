@@ -34,8 +34,9 @@ class SaleRequestController extends Controller
     {
         $data = $request->all();
         $data['user_id'] = auth('api')->id() ?: 0;
-        $types = explode(",",$request->product_type);
-        $data['handle_type'] = $types?$types[0]:"";
+        $types = implode(",", $request->product_type);
+        $data['handle_type'] = $types ?$request->product_type[0]: "";
+        $data['product_type'] = $types ;
 
         $sale =  SaleRequest::create($data);
         $ids = explode(",", $request->upload_ids);
@@ -48,8 +49,10 @@ class SaleRequestController extends Controller
         $this->canHandle($request);
         $params = $saleRqRequest->all();
         $params['status'] = 'open';
-        $types = explode(",",$request->product_type);
-        $params['handle_type'] = $types ? $types[0]: "";
+        $types = implode(",", $request->product_type);
+        $data['handle_type'] = $types ?$request->product_type[0]: "";
+        $data['product_type'] = $types ;
+
         $request->update( $params);
 
         Upload::where('source_type', 'sale_request')->where('source_id', $saleRqRequest->id)->update(['source_id' => 0]);
@@ -59,7 +62,7 @@ class SaleRequestController extends Controller
             Upload::whereIn('id', $files)->update(['source_id' => $saleRqRequest->id, 'source_type' => 'sale_request']);
         }
 
-        $pre =   PreSaleRequest::where('sale_num', $request->sale_num)->first();
+        $pre =   PreSaleRequest::where('project_no', $request->sale_num)->first();
 
         if($pre){
             $pre->update(['status' => 'change']);
