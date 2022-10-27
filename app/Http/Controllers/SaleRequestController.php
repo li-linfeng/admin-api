@@ -123,9 +123,7 @@ class SaleRequestController extends Controller
     }
 
 
-
-
-
+    
 
     protected function canHandle(SaleRequest $saleRequest)
     {
