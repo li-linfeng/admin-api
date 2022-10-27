@@ -66,12 +66,12 @@ $api->version('v1', [
 
 
         $api->get('/sale_requests', 'SaleRequestController@list')->name('api.sale_requests.list')->permissions("销售需求:销售需求列表");
-        $api->get('/sale_request_num', 'SaleRequestController@getUniqueId')->name('api.sale_requests.uuid')->permissions("销售需求:获取销售需求编码");
         $api->post('/sale_requests', 'SaleRequestController@store')->name('api.sale_requests.store')->permissions("销售需求:新增销售需求");
         $api->put('/sale_requests/{request}', 'SaleRequestController@update')->name('api.sale_requests.update')->permissions("销售需求:编辑销售需求");
         $api->delete('/sale_requests/{request}', 'SaleRequestController@delete')->name('api.sale_requests.delete')->permissions("销售需求:删除销售需求");
         $api->post('/sale_requests/{request}/publish', 'SaleRequestController@publish')->name('api.sale_requests.publish')->permissions("销售需求:发布需求");
         $api->get('/sale_requests/download', 'SaleRequestController@download')->name('api.sale_requests.download')->permissions("销售需求:导出销售需求");
+
 
         $api->get('/preSales', 'PreSaleController@list')->name('api.preSales.list')->permissions("工程售前:工程售前列表");
         $api->put('/preSales/{request}', 'PreSaleController@update')->name('api.preSales.update')->permissions("工程售前:添加工程售前资料");
