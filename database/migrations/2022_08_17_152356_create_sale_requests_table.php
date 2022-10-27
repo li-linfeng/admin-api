@@ -18,7 +18,7 @@ class CreateSaleRequestsTable extends Migration
             $table->string("project_no")->default("")->comment("项目编号");
             $table->string("product_type")->default("")->comment("产品类型");
             $table->string("handle_type")->default("")->comment("第一个产品类型");
-            $table->string("customer_type")->default("")->comment("客户性质");
+            $table->string("customer_name")->default("")->comment("客户名称");
             $table->string("device_name")->nullable()->default("")->comment("设备名称");
             $table->string("driver_type")->nullable()->default("")->comment("驱动类型");
             $table->string("driver_power")->nullable()->default("")->comment("驱动功率");
@@ -30,9 +30,10 @@ class CreateSaleRequestsTable extends Migration
             $table->string("shaft_two_match_distance")->nullable()->default("")->comment("轴2配合段长度");
             $table->string("shaft_space_distance")->nullable()->default("")->comment("轴端面间距");
             $table->string("status")->nullable()->default("open")->comment("状态");
-            $table->text("remark")->nullable()->comment("备注")->nullable();
+            $table->text("remark")->nullable()->comment("备注");
             $table->integer("user_id")->comment("所属用户id")->default(0);
             $table->string("expect_time")->comment("期望货期")->default("");
+            $table->text("return_reason")->nullable()->comment("退回原因");
             $table->timestamps();
         });
     }

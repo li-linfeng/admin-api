@@ -61,31 +61,38 @@ class SaleRequestController extends Controller
         if (count($files)) {
             Upload::whereIn('id', $files)->update(['source_id' => $saleRqRequest->id, 'source_type' => 'sale_request']);
         }
+        $ids =   PreSaleRequest::where('sale_id', $request->id)->pluck('id')->toArray();
 
-        $pre =   PreSaleRequest::where('project_no', $request->sale_num)->first();
-
-        if($pre){
-            $pre->update(['status' => 'change']);
+        if($ids){ //删除 售前处理关联上传
+            Upload::where('source_type', 'pre_sale')->whereIn('source_id',$ids)->delete();
         }
+        //删除 售前处理
+        PreSaleRequest::where('sale_id', $request->id)->delete();
+
+        
         return $this->response()->noContent();
     }
 
     public function delete(SaleRequest $request)
     {
         $this->canHandle($request);
+        $ids =   PreSaleRequest::where('sale_id', $request->id)->pluck('id')->toArray();
+        if($ids){ //删除 售前处理关联上传
+            Upload::where('source_type', 'pre_sale')->whereIn('source_id',$ids)->delete();
+        }
+        //删除 售前处理
+        PreSaleRequest::where('sale_id', $request->id)->delete();
+
         $request->delete();
+        
         return $this->response()->noContent();
     }
 
     public function publish(SaleRequest $request)
     {
         $this->canHandle($request);
-        $user_id = auth('api')->id();
         $request->status = 'published';
         $request->save();
-        //生成一条
-        PreSaleRequest::where('sale_num', $request->sale_num)->delete();
-        PreSaleRequest::create(['sale_num' => $request->sale_num, 'user_id' => $user_id, 'category' => $request->product_type]);
         //插入一条退回代办
         if($request->handler){
             Todo::create([
@@ -97,6 +104,28 @@ class SaleRequestController extends Controller
         }
         return $this->response()->noContent();
     }
+
+    public function return(SaleRequest $request)
+    {
+        $this->canHandle($request);
+        $request->status = 'return';
+        $request->return_reason = app('request')->input('return_reason');
+        $request->save();
+        //插入一条退回代办
+        $content ="工程编号为{$request->project_no}的需求被退回，请修改后重新发布";
+        Todo::create([
+            'content'   => $content,
+            'type'      => 'sale_request',
+            'user_id'   => $request->user_id,
+            'source_id' => $request->project_no
+        ]); 
+        return $this->response()->noContent();
+    }
+
+
+
+
+
 
     protected function canHandle(SaleRequest $saleRequest)
     {

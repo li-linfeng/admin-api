@@ -48,6 +48,13 @@ class SaleRequest extends Model
         return $this->hasMany(Upload::class, 'source_id', 'id')->where('source_type', 'sale_request');
     }
 
+    
+    public function preSales()
+    {
+        return $this->hasMany(PreSaleRequest::class, 'sale_id', 'id');
+    }
+
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
