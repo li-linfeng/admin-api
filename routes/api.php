@@ -30,6 +30,7 @@ $api->version('v1', [
 
     $api->get('/test', 'TestController@test')->name('api.test.test');
     $api->post('/login', 'AuthController@login')->name('api.login.login');
+    $api->post('/emails', 'EmailController@send')->name('api.email.send');
     /**
      * 无需登录的接口
      */
