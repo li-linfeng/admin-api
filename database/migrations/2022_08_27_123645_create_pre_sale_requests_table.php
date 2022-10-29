@@ -15,17 +15,11 @@ class CreatePreSaleRequestsTable extends Migration
     {
         Schema::create('pre_sale_requests', function (Blueprint $table) {
             $table->id(); 
-            $table->string('project_no')->default("")->comment("工程编号");
-            $table->string('product_type')->default("")->comment("产品型号");
+            $table->string('sale_id')->default("")->comment("销售需求编号");
+            $table->string('product_name')->default("")->comment("产品型号");
             $table->string('category')->default("")->comment("产品所属类型");
             $table->string('product_price')->default("")->comment("产品价格");
-            $table->string('pre_pay')->default("")->comment("预付款金额");
             $table->string('product_date')->default("")->comment("产品货期");
-            $table->text('remark')->nullable()->comment("备注");
-            $table->integer('user_id')->default(0)->comment("处理工程师id");
-            $table->string('status')->default("published")->comment("状态， published, return, finish");
-            $table->text('return_reason')->nullable()->comment("退回原因");
-            $table->string('expired_at')->default("")->comment("价格有效期");
             $table->timestamps();
         });
     }

@@ -6,7 +6,6 @@ use App\Exports\PreSaleExport;
 use App\Http\Transformers\PreSaleRequestTransformer;
 use App\Models\PreSaleRequest;
 use App\Models\SaleRequest;
-use App\Models\Todo;
 use App\Models\Upload;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -18,12 +17,10 @@ class PreSaleController extends Controller
     {
         $this->canHandle($request);
         $params = app('request')->only([
-            'product_type',
+            'category',
+            'product_name',
             'product_price',
-            'pre_pay',
             'product_date',
-            'remark',
-            'expired_at'
         ]);
         $request->update($params);
         Upload::where('source_type', 'pre_sale')->where('source_id', $request->id)->update(['source_id' => 0]);
@@ -39,58 +36,131 @@ class PreSaleController extends Controller
         $filter = $request->only('filter_status');
         $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
         $filter['filter_display'] = 1;
-        $data = PreSaleRequest::filter($filter)
-            ->with(['uploads', 'saleRequest.uploads', 'user', 'handler'])
+
+        $paginator = SaleRequest::filter($filter)
+            ->with(['user', 'handler', 'preSales.uploads'])
+            ->withCount(['preSales'])
             ->paginate($request->input('per_page', 10));
 
-        return $this->response()->paginator($data, $transformer, [], function ($resource, $fractal) {
-            $fractal->parseIncludes(['uploads', 'sale_request.uploads', 'user', 'handler']);
-        });
+        $result =[];
+        foreach($paginator->items() as $item){
+            if ($item->preSales){
+                foreach($item->preSales as $sale){
+                    $result[]= [
+                        'id'            => $item->id,
+                        'project_no'    => $item->project_no,
+                        'customer_name' => $item->customer_name,
+                        'user_name'     => $item->user->username,
+                        'handler_name'  => $item->handler->username,
+                        'product_name'  => $sale->product_name,
+                        'category'      => $sale->category,
+                        'product_price' => $sale->product_price,
+                        'product_date'  => $sale->product_date,
+                        'uploads'       => $sale->uploads->toArray(),
+                    ];
+                }
+            }else{
+                $result[]= [
+                    'id'            => $item->id,
+                    'project_no'    => $item->project_no,
+                    'customer_name' => $item->customer_name,
+                    'user_name'     => $item->user->username,
+                    'handler_name'  => $item->handler->username,
+                    'product_name'  => '',
+                    'category'      => '',
+                    'product_price' => '',
+                    'product_date'  => '',
+                    'uploads'  => [],
+                ];
+            }
+        }
+
+        $meta = [
+            'pagination' => [
+                'total' => $paginator->total(),
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $request->input('per_page', 10),
+                'total_pages' => $paginator->lastPage()
+            ]
+            ];
+        return $this->response->array([
+            'data' => $result,
+            'meta' => $meta
+        ]);
     }
 
-    public function updateStatus(PreSaleRequest $request, Request $req)
-    {
-        $this->canHandle($request);
-        $request->update($req->only(['status']));
-        if($req->status == 'return'){
-            $request->return_reason = $req->input('return_reason'); 
-            $request->save();
-        }
 
-        $content = $req->status == 'return' ? "编号为{$request->sale_num}的需求被退回，请修改后重新发布" : "您创建的编号为{$request->sale_num}的需求已完成";
-        $type = $req->status == 'return' ? "sale_request" : "pre_sale";
-        Todo::create([
-            'content'   => $content,
-            'type'      => $type,
-            'user_id'   => $request->user_id,
-            'source_id' => $request->sale_num
-        ]); 
-
-        if ($req->status == 'finish'){
-            
+    public function bindToSaleRequest(Request $request)
+    {   
+        $ids = explode(",", $request->pre_sales);
+        if(!$ids){
+            abort(422, "请添加产品信息");
         }
-        SaleRequest::where('sale_num', $request->sale_num)->update(['status' => $req->status]);
+        PreSaleRequest::whereIn('id',$ids)->update('sale_id', $request->sale_id);
         return $this->response()->noContent();
     }
 
-    protected function canHandle(PreSaleRequest $preRequest)
-    {
-        if (optional($preRequest->handler)->id ==  request()->user_info['user_id'] ||request()->user_info['is_super']){
-            return true;
-        }
-        abort(403, '没有权限进行此操作');
-    }
 
-     
     public function download(Request $request)
     {
+        
         $filter = $request->only('filter_status');
         $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
         $filter['filter_display'] = 1;
-        $data = PreSaleRequest::filter($filter)
-            ->with(['saleRequest', 'user', 'handler'])
+
+        $paginator = SaleRequest::filter($filter)
+            ->with(['user', 'handler', 'preSales'])
+            ->withCount(['preSales'])
             ->get();
+
+        $result =[];
+        foreach($paginator->items() as $item){
+            if ($item->preSales){
+                foreach($item->preSales as  $k=>$sale){
+                    $is_start = $k == 0 ? 1 : 0;
+                    $result[]         = [
+                        'id'              => $item->id,
+                        'project_no'      => $item->project_no,
+                        'customer_name'   => $item->customer_name,
+                        'user_name'       => $item->user->username,
+                        'handler_name'    => $item->handler->username,
+                        'product_name'    => $sale->product_name,
+                        'category'        => $sale->category,
+                        'product_price'   => $sale->product_price,
+                        'product_date'    => $sale->product_date,
+                        'uploads'         => $sale->uploads->toArray(),
+                        'is_start'        => $is_start,
+                        'pre_sales_count' => $item->preSales_count,
+                    ];
+                }
+            }else{
+                $result[]= [
+                    'id'            => $item->id,
+                    'project_no'    => $item->project_no,
+                    'customer_name' => $item->customer_name,
+                    'user_name'     => $item->user->username,
+                    'handler_name'  => $item->handler->username,
+                    'product_name'  => '',
+                    'category'      => '',
+                    'product_price' => '',
+                    'product_date'  => '',
+                    'is_start'      => 1,
+                    'uploads'       => [],
+                ];
+            }
+        }
             
-        return Excel::download(new PreSaleExport($data), 'pre_sale.xlsx');
+        return Excel::download(new PreSaleExport($result), 'pre_sale.xlsx');
+    }
+
+
+    protected function canHandle(PreSaleRequest $request)
+    {
+
+        $saleRequest = $request->load('saleRequest.handler');
+        if ($saleRequest->handler->id == request()->user_info['user_id'] ||  request()->user_info['is_super'] ){
+            return true;
+        }
+        abort(403, '没有权限进行此操作');
     }
 }

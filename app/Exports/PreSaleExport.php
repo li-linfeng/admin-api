@@ -4,11 +4,13 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
 
-class PreSaleExport implements FromCollection
+class PreSaleExport implements FromCollection,WithEvents
 {
     protected $data;
-
+    protected $merge = [];
     //構造函數傳值
     public function __construct($data)
     {
@@ -27,41 +29,52 @@ class PreSaleExport implements FromCollection
     protected function createData()
     {
         $header = [[
-            '需求编号',
+            '序号',
             '项目编号',
-            '客户名称',
-            '产品类型',
             '创建人',
-            '创建时间',
-            '希望货期',
             '处理人',
+            '产品类型',
             '产品型号',
             '产品单价',
-            '需预付款',
             '产品货期',
-            '价格有效期',
             '状态',
-            '退回原因'
         ]];
-        $data = collect($this->data)->map(function ($item) {
+        $data = collect($this->data)->map(function ($item,$k) {
+            // if ($item->is_start){
+            //     $index = $k +2;
+            //     $this->merge[$item->order_id]= [
+            //         'start'  => $index,
+            //         'end' => $index +  $item->order->order_items_count-1
+            //     ];
+            // }
           return [
-                'sale_num'          => $item->saleRequest->sale_num,
-                'project_id'        => $item->saleRequest->project_id,
-                'customer_type'     => $item->saleRequest->customer_type,
-                'sale_product_type' => $item->saleRequest->product_type,
-                'username'          => $item->user->username,
-                'created_at'        => $item->created_at->toDateTimeString(),
-                'expect_time'       => $item->saleRequest->expect_time,
-                'handler_name'      => $item->handler->username,
-                'product_type'      => $item->product_type,
-                'product_price'     => formatMoney($item->product_price),
-                'pre_pay'           => formatMoney($item->pre_pay),
-                'product_date'      => $item->product_date,
-                'expired_at'        => $item->expired_at,
-                'status_cn'         => $item->status_cn,
-                'return_reason'     => $item->return_reason,
+                'id'            => ['id'],
+                'project_no'    => ['project_no'],
+                'customer_name' => ['customer_name'],
+                'user_name'     => ['username'],
+                'handler_name'  => ['username'],
+                'product_name'  => ['product_name'],
+                'category'      => ['category'],
+                'product_price' => ['product_price'],
+                'product_date'  => ['product_date'],
             ];
         });
         return collect($header)->merge($data);
+    }
+
+    public function registerEvents(): array
+    {
+   
+        return [
+            // AfterSheet::class  => function(AfterSheet $event) {
+            //     $cols = ['A','B','C','D','E','J','K'];
+            //     //合并单元格
+            //     foreach($cols as $col){
+            //         foreach($this->merge as $merge){
+            //             $event->sheet->getDelegate()->mergeCells($col.$merge['start'].":".$col.$merge['end']);
+            //         }   
+            //     }
+            // }
+        ];
     }
 }

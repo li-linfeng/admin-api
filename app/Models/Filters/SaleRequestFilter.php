@@ -7,21 +7,21 @@ trait SaleRequestFilter
 {
     use BaseFilter;
 
-
     
-    public function filterCustomerType($type ='')
+    public function filterCustomerName($name ='')
     {
-        if (!$type) {
+        if (!$name) {
             return;
         }
-        return $this->builder->where('customer_type', $type);
+        return $this->builder->where('customer_name', $name);
     }
 
-    public function filterProductType($type ='')
+    public function filterProjectNo($no ='')
     {
-        if (!$type) {
+        if (!$no) {
             return;
         }
-        return $this->builder->where('product_type', $type);
+        return $this->builder->where('project_no', $no);
     }
+
 }
