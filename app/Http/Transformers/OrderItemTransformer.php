@@ -7,16 +7,16 @@ use App\Models\OrderItem;
 class OrderItemTransformer extends BaseTransformer
 {
 
-    protected $availableIncludes = ['sale_request','order','user', 'handler'];
+    protected $availableIncludes = ['order','user', 'handler'];
 
     public function transform(OrderItem $orderItem)
     {
         return [
             'id'              => $orderItem->id,
-            'sale_num'        => $orderItem->sale_num,
-            'product_type'    => $orderItem->product_type,
+            'project_no'      => $orderItem->project_no,
+            'product_name'    => $orderItem->product_name,
+            'category_name'    => $orderItem->category_name,
             'product_price'   => formatMoney($orderItem->product_price),
-            'pre_pay'         => formatMoney($orderItem->pre_pay),
             'product_date'    => $orderItem->product_date,
             'user_id'         => $orderItem->user_id,
             'status'          => $orderItem->status,
@@ -30,20 +30,13 @@ class OrderItemTransformer extends BaseTransformer
         
     }
 
-    public function includeSaleRequest(OrderItem $orderItem)
-    {
-        if (!$orderItem->saleRequest) {
-            return $this->nullObject();
-        }
-        return $this->item($orderItem->saleRequest, new SaleRequestTransformer(), 'flatten');
-    }
 
     public function includeOrder(OrderItem $orderItem)
     {
         if (!$orderItem->order) {
             return $this->nullObject();
         }
-        return $this->item($orderItem->order, new OrderTransformer(), 'flatten');
+        return $this->item($orderItem->order, new OrderTransformer());
     }
 
     public function includeUser(OrderItem $orderItem)

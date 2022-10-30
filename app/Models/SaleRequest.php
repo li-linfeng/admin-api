@@ -29,6 +29,7 @@ class SaleRequest extends Model
         'status',
         'handle_type',
         'project_no',
+        'customer_name',
     ];
     protected $statusArr = [
         "open"      => "占用",

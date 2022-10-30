@@ -19,18 +19,14 @@ class Order extends Model
         'total_pre_pay',
         'upload_ids',
         'remark',
+        'project_no',
+        'handler_type',
     ];
 
     protected $statusArr = [
         "open"   => "待处理",
         "finish" => "完成",
     ];
-
-
-    public function preSales()
-    {
-        return $this->hasMany(PreSaleRequest::class, 'order_id', 'id');
-    }
 
     public function orderItems()
     {
@@ -43,6 +39,19 @@ class Order extends Model
         return $this->hasMany(Upload::class, 'source_id', 'id')->where('source_type', 'order');
     }
 
+
+     //项目创建人
+     public function user()
+     {
+         return $this->belongsTo(User::class, "user_id", "id");
+     }
+
+     
+     //项目创建人
+     public function project()
+     {
+         return $this->belongsTo(Project::class, "project_no", "project_no");
+     }
 
     public function getStatusCnAttribute()
     {

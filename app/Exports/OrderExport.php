@@ -31,19 +31,19 @@ class OrderExport implements FromCollection,WithEvents
     protected function createData()
     {
         $header = [[
+            '序号',
             '订单编号',
             '创建时间',
-            '订单总价',
-            '总预付款',
-            '需求编号',
-            '产品类型',
-            '产品名称',
-            '产品单价',
-            '单套预付款',
-            '数量',
-            '产品货期',
             '创建人',
             '处理人',
+            '项目编号',
+            '产品类型',
+            '产品型号',
+            '产品单价',
+            '产品货期',
+            '数量',
+            '订单总价',
+            '订单总预付款',
             '备注',
             '物料编号',
             '状态',
@@ -57,22 +57,22 @@ class OrderExport implements FromCollection,WithEvents
             ];
           }
            $tmp=  [
-                'order_num'         => $item->order->order_num,
-                'created_at'        => $item->order->created_at->toDateTimeString(),
-                'total_pay'         => formatMoney($item->order->total_pay),
-                'total_pre_pay'     => formatMoney($item->order->total_pre_pay),
-                'sale_num'          => $item->sale_num,
-                'sale_product_type' => $item->saleRequest->product_type,
-                'product_type'      => $item->product_type,
-                'product_price'     => formatMoney($item->product_price),
-                'pre_pay'           => formatMoney($item->pre_pay),
-                'amount'            => $item->amount,
-                'product_date'      => $item->product_date,
-                'user'              => $item->user->username,
-                'handler_name'      => $item->handler->username,
-                'remark'            => $item->order->remark,
-                'material_number'   => $item->material_number,
-                'status_cn'         => $item->status_cn,
+                "index"           => $k+1,
+                'order_num'       => $item->order->order_num,
+                'created_at'      => $item->order->created_at->toDateTimeString(),
+                'user'            => $item->user->username,
+                'handler_name'    => $item->handler->username,
+                'project_no'      => $item->project_no,
+                'category_name'   => $item->category_name,
+                'product_name'    => $item->product_name,
+                'product_price'   => formatMoney($item->product_price),
+                'product_date'    => $item->product_date,
+                'amount'          => $item->amount,
+                'total_pay'       => formatMoney($item->order->total_pay),
+                'total_pre_pay'   => formatMoney($item->order->total_pre_pay),
+                'remark'          => $item->order->remark,
+                'material_number' => $item->material_number,
+                'status_cn'       => $item->status_cn,
             ];
             return $tmp;
         });
@@ -84,7 +84,7 @@ class OrderExport implements FromCollection,WithEvents
    
         return [
             AfterSheet::class  => function(AfterSheet $event) {
-                $cols = ['A','B','C','D','N'];
+                $cols = ['A','B','C','D','E','F','L','M','N'];
                 //合并单元格
                 foreach($cols as $col){
                     foreach($this->merge as $merge){

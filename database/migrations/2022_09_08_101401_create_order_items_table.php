@@ -16,13 +16,13 @@ class CreateOrderItemsTable extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->integer('order_id')->default(0)->comment("订单id");
-            $table->string('sale_num')->default('')->comment("需求编号");
+            $table->string('project_no')->default('')->comment("项目编号");
             $table->integer('amount')->default(0)->comment("数量");
-            $table->string('product_type')->default("")->comment("产品型号");
+            $table->string('product_name')->default("")->comment("产品型号");
             $table->string('product_price')->default("")->comment("产品价格");
-            $table->string('pre_pay')->default("")->comment("预付款金额");
             $table->string('product_date')->default("")->comment("产品货期");
             $table->integer('user_id')->default(0)->comment("创建者id");
+            $table->string('handler_type')->default("")->comment("处理人type");
             $table->string('status')->default('open')->comment("状态");
             $table->string('material_number')->default("")->comment("物料编号");
             $table->string('category_name')->default("")->comment("物料类型");

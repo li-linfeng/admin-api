@@ -58,4 +58,12 @@ class OrderTransformer extends BaseTransformer
         }
         return $this->item($order->boom, new UploadTransformer());
     }
+
+    public function includeUser(Order $order)
+    {
+        if (!$order->user) {
+            return $this->nullObject();
+        }
+        return $this->item($order->user, new UserTransformer());
+    }
 }

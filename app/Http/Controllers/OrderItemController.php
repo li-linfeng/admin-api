@@ -33,10 +33,10 @@ class OrderItemController extends Controller
          if (optional($handler)->user_id){
              //插入代办
              Todo::create([
-                 'content'   => "编号{$orderItem->order->order_num}的订单中需求编号{$orderItem->saleRequest->sale_num}的项目待处理",
+                 'content'   => "编号{$orderItem->order->order_num}的订单中工程编号{$orderItem->project_no}的项目待处理",
                  'type'      => 'order',
                  'user_id'   => optional($handler)->user_id,
-                 'source_id' => $orderItem->order->order_num
+                 'source_id' => $orderItem->project_no
              ]); 
          }
         

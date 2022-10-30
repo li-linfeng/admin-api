@@ -14,10 +14,9 @@ class SaleRequestTransformer extends BaseTransformer
     {
         return [
             'id'                           => $saleRequest->id,
-            'sale_num'                     => $saleRequest->sale_num,
             'product_type'                 => $saleRequest->product_type,
             'product_type_arr'             => explode(",",$saleRequest->product_type),
-            'customer_type'                => $saleRequest->customer_type,
+            'customer_name'                => $saleRequest->customer_name,
             'device_name'                  => $saleRequest->device_name,
             'driver_type'                  => $saleRequest->driver_type,
             'driver_power'                 => $saleRequest->driver_power,
@@ -36,6 +35,7 @@ class SaleRequestTransformer extends BaseTransformer
             'user_id'                      => $saleRequest->user_id,
             'expect_time'                  => $saleRequest->expect_time,
             'project_no'                   => $saleRequest->project_no,
+            'return_reason'                => $saleRequest->return_reason,
         ];
     }
 

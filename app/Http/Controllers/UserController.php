@@ -96,4 +96,17 @@ class UserController extends Controller
             ->toArray();
         return $this->response()->array($permissions);
     }
+
+    public function resetPass(Request $request)
+    {
+        if($request->pass != $request->pass_confirm){
+            abort(422, '两次输入密码不一致');
+        }
+
+        User::where('id',auth('api')->id())->update([
+            'password'=> bcrypt($request->pass)
+        ]);
+
+        return $this->response()->noContent();
+    }
 }

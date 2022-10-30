@@ -46,6 +46,7 @@ $api->version('v1', [
     ], function ($api) {
         $api->get('/user/info', 'UserController@info')->name('api.user.info')->permissions('用户信息:用户信息');
         $api->get('/user_permissions', 'UserController@getUserPermissions')->name('api.user.user_permission')->permissions('用户信息:用户权限');
+        $api->post('/resetPass', 'UserController@resetPass')->name('api.user.resetPass')->permissions('用户信息:修改密码');
 
         $api->get('/materials', 'MaterialController@index')->name('api.materials.index')->permissions("物料管理:物料列表");
 
@@ -73,11 +74,12 @@ $api->version('v1', [
         $api->post('/sale_requests/{request}/publish', 'SaleRequestController@publish')->name('api.sale_requests.publish')->permissions("销售需求:发布需求");
         $api->get('/sale_requests/download', 'SaleRequestController@download')->name('api.sale_requests.download')->permissions("销售需求:导出销售需求");
 
-
+        $api->post('/sale_requests/{request}/finish', 'SaleRequestController@finish')->name('api.sale_requests.finish')->permissions("工程售前:完成销售需求");
+        $api->post('/sale_requests/{request}/return', 'SaleRequestController@return')->name('api.sale_requests.return')->permissions("工程售前:退回销售需求");
+        $api->post('/sale_requests/{request}/bind_pre_sales', 'PreSaleController@bindToSaleRequest')->name('api.preSales.bind_sale')->permissions("工程售前:处理");
         $api->get('/preSales', 'PreSaleController@list')->name('api.preSales.list')->permissions("工程售前:工程售前列表");
-        $api->put('/preSales/{request}', 'PreSaleController@update')->name('api.preSales.update')->permissions("工程售前:添加工程售前资料");
-        $api->post('/preSales/{request}/status', 'PreSaleController@updateStatus')->name('api.preSales.updateStatus')->permissions("工程售前:修改工程售前状态");
         $api->get('/preSales/download', 'PreSaleController@download')->name('api.preSales.download')->permissions("工程售前:导出工程售前");
+
 
         $api->get('/order_num', 'OrderController@getOrderNum')->name('api.order.order_num')->permissions("订单:获取订单编码");
         $api->post('/orders', 'OrderController@store')->name('api.order.store')->permissions("订单:新增订单");

@@ -32,7 +32,7 @@ class OrderItem extends Model
     //工厂的处理人
     public function handler()
     {
-        return $this->hasOneThrough(User::class, Handler::class, 'product_type', 'id', 'category_name', 'handler_id' )->where('handlers.module', 'api.order');
+        return $this->hasOneThrough(User::class, Handler::class, 'product_type', 'id', 'handler_type', 'handler_id' )->where('handlers.module', 'api.order');
     }
 
     public function order()

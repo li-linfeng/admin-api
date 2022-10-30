@@ -27,27 +27,29 @@ class SaleRequestExport implements FromCollection
     protected function createData()
     {
         $header = [[
-            '需求编号',
+            '序号',
             '项目编号',
             '客户名称',
-            '产品性质',
+            '产品类型',
             '希望货期',
             '创建人',
             '创建时间',
-            '状态',
             '处理人',
+            '状态',
+            '退回原因'
         ]];
         $data = collect($this->data)->map(function ($item) {
            return  [
-                'id'            => $item->sale_num,
-                'name'          => $item->project_id,
-                'customer_type' => $item->customer_type,
+                'id'            => $item->id,
+                'project_no'    => $item->project_no,
+                'customer_name' => $item->customer_name,
                 'product_type'  => $item->product_type,
                 'expect_time'   => $item->expect_time,
                 'username'      => $item->user->username,
+                'handler_name'  => $item->handler->username,
                 'created_at'    => $item->created_at->toDateTimeString(),
                 'status_cn'     => $item->status_cn,
-                'handler_name'  => $item->handler->username
+                'return_reason' => $item->return_reason,
             ];
         });
         return collect($header)->merge($data);

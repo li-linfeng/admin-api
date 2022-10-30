@@ -13,7 +13,7 @@ class PreSaleRequest extends Model
     protected $fillable = [
         'sale_id',
         'project_no',
-        'product_type',
+        'product_name',
         'product_price',
         'pre_pay',
         'product_date',
@@ -43,7 +43,7 @@ class PreSaleRequest extends Model
 
     public function saleRequest()
     {
-        return $this->belongsTo(SaleRequest::class, 'sale_num', 'sale_num');
+        return $this->belongsTo(SaleRequest::class, 'sale_id', 'sale_id');
     }
 
 
@@ -52,11 +52,6 @@ class PreSaleRequest extends Model
         return $this->hasOne(User::class, 'id', 'user_id' );
     }
 
-    public function handler()
-    {
-        return $this->hasOneThrough(User::class, Handler::class, 'product_type', 'id', 'category', 'handler_id' )->where('handlers.module', 'api.preSales');
-    }
-   
 
     public function getStatusCnAttribute()
     {

@@ -8,6 +8,8 @@ use App\Models\Handler;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PreSaleRequest;
+use App\Models\Project;
+use App\Models\SaleRequest;
 use App\Models\Todo;
 use App\Models\Upload;
 use Carbon\Carbon;
@@ -16,13 +18,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
-    public function getOrderNUm()
-    {
-        return $this->response()->array([
-            'uuid' => date("Ymd") . uniqid()
-        ]);
-    }
-
 
     public function store(Request $request)
     {
@@ -30,47 +25,48 @@ class OrderController extends Controller
             abort(422,"请选择关联的售前工程");
         }
 
+        $saleRequest = SaleRequest::where('project_no', $request->project_no)->with(['handler'])->first();
+    
         $order = Order::create(array_merge(
             [
                 'order_num' => $request->order_num,
+                'project_no' => $request->project_no,
                 'status' => 'open',
                 'user_id' => auth('api')->id(),
+                'customer_name' => $saleRequest->customer_name,
             ],
-            $request->only(['order_num', 'customer_name', 'total_pay', 'total_pre_pay', 'remark'])
+            $request->only(['total_pay', 'total_pre_pay', 'remark'])
         ));
-
+ 
         $items = [];
         foreach($request->items as $v){
-            $items[$v['id']] = $v['count'];
+            $items[$v['pre_sale_id']] = $v['count'];
         }
-        $orderItems = PreSaleRequest::whereIn('id', array_keys($items))->get()->map(function ($item) use ($order, $items) {
-            $handler = Handler::where('product_type', $item->category)->first();
-            if (optional($handler)->handler_id){
+
+        $orderItems = PreSaleRequest::whereIn('id', array_keys($items))->get()->map(function ($item) use ($order, $items, $saleRequest) {
+            $handler =  $saleRequest->handler;
+            if ($handler){
                 //插入代办
                 Todo::create([
-                    'content'   => "编号{$order->order_num}的订单中需求编号{$item->sale_num}的项目待处理",
+                    'content'   => "编号{$order->order_num}的订单中项目编号{$order->project_no}的项目待处理",
                     'type'      => 'order',
-                    'user_id'   => optional($handler)->handler_id,
-                    'source_id' => $order->order_num
+                    'user_id'   => optional($handler)->id,
+                    'source_id' => $order->project_no
                 ]); 
             }
             return [
-                'sale_num'      => $item->sale_num,
+                'project_no'    => $saleRequest->project_no,
+                'handler_type'  => $saleRequest->handle_type,
                 'amount'        => $items[$item->id],
-                'product_type'  => $item->product_type,
+                'product_name'  => $item->product_name,
                 'category_name' => $item->category,
                 'product_price' => $item->product_price,
-                'pre_pay'       => $item->pre_pay,
                 'product_date'  => $item->product_date,
-                'user_id'       => $item->user_id,
+                'user_id'       => $order->user_id,
                 'status'        => 'open',
-                'order_id'       => $order->id, 
+                'order_id'      => $order->id,
                 'created_at'    => Carbon::now()->toDateTimeString(),
-            ]; 
-
-            //
-           
-
+            ];       
         })->toArray();
         OrderItem::insert($orderItems);
 
@@ -88,7 +84,7 @@ class OrderController extends Controller
         $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
         $filter['filter_display'] = 1;
         $paginator = Order::filter($filter)
-            ->with(['orderItems.saleRequest', 'uploads','orderItems.user','orderItems.handler'])
+            ->with(['orderItems.user','orderItems.handler', 'uploads'])
             ->withCount('orderItems')
             ->paginate($request->input('per_page', 10));
 
@@ -107,7 +103,7 @@ class OrderController extends Controller
             }
         }
         return $this->response()->collection(collect($result), $transformer, [], function ($resource, $fractal) {
-            $fractal->parseIncludes(['order.uploads', 'sale_request','user','handler']);
+            $fractal->parseIncludes(['order.uploads', 'user','handler']);
         })->setMeta([
             'pagination' => [
                 'total' => $paginator->total(),
@@ -124,7 +120,7 @@ class OrderController extends Controller
         $filter['filter_keyword'] = $request->only('filter_col', 'filter_val');
         $filter['filter_display'] = 1;
         $data = Order::filter($filter)
-            ->with(['orderItems.saleRequest','orderItems.user','orderItems.handler'])
+            ->with(['orderItems.user','orderItems.handler'])
             ->withCount('orderItems')
             ->get();
 
