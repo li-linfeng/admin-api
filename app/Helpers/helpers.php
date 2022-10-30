@@ -172,7 +172,7 @@ if (!function_exists('makeSeq')) {
         if (!count($data)){
             return $data;
         }
-        foreach($data as $k => &$child){
+        foreach($data as $k => $child){
             $index           = $k +1;
             $seq             = $prefix  ? $prefix.'.'. $index:  $index;
             $child->index    = $seq;

@@ -107,4 +107,16 @@ class MaterialController extends Controller
         return $this->response()->noContent();
     }
 
+
+    public function delete(Material $material)
+    {
+        $material->load(['children']);
+
+        if ($material->children->isEmpty()){
+            $material->delete();
+        }
+
+    }
+
+
 }
