@@ -27,9 +27,11 @@ class EmailController extends Controller
             'info'    => $request->input('companyx','').'公司的'.$request->input('namex','').'有'.$request->input('needsx','').'的需求，邮箱为：'.$request->input('emailx',''),
             'message' => $request->input('messagex','')
         ];
+
+        $config = config('email');
         try{
-            Mail::to('892963341@qq.com')
-            ->cc('18013272501@163.com')
+            Mail::to($config['to'])
+            ->cc($config['cc'])
             ->send(new GetNeeds($data));
 
         }catch(\Exception $e){
