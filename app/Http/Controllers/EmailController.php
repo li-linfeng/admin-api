@@ -16,7 +16,7 @@ class EmailController extends Controller
         $emailData = [
             'company' => $request->input('companyx',''),
             'name'    => $request->input('namex',''),
-            'email'   => $request->input('email',''),
+            'email'   => $request->input('emailx',''),
             'message' => $request->input('messagex',''),
             'needs'   => $request->input('needsx',''),
         ];
