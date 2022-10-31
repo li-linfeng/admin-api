@@ -25,7 +25,8 @@ class EmailController extends Controller
         //发送邮件
         $data = [
             'info'    => $request->input('companyx','').'公司的'.$request->input('namex','').'有'.$request->input('needsx','').'的需求，邮箱为：'.$request->input('emailx',''),
-            'message' => $request->input('messagex','')
+            'message' => $request->input('messagex',''),
+            'needs' => $request->input('needsx','')
         ];
 
         $config = config('email');

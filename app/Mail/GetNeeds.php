@@ -33,6 +33,6 @@ class GetNeeds extends Mailable
         return $this->view('mails.needs')->with([
             'info' => $this->data['info'],
             'mes'  => $this->data['message']
-        ])->subject('获取样本');
+        ])->subject($this->data['needs']);
     }
 }

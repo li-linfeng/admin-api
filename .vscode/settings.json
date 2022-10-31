@@ -7,11 +7,9 @@
     ],
     "files.autoSave":"off",
     "eslint.validate": [
-       "javascript",
-       "javascriptreact",
-       "html",
-       { "language": "vue", "autoFix": true }
-     ],
+        "javascript",
+        "javascriptreact","html",
+        "vue"],
      "eslint.options": {
         "plugins": ["html"]
      },
