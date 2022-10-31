@@ -30,6 +30,7 @@ class MaterialTransformer extends BaseTransformer
                     'amount'      => $material->pivot ?  $material->pivot->amount: "---",
                     'label'       => $material->label,
                     'index'       => $material->index,
+                    'property'    => $material->property,
                 ];
             default :
                 return  [
@@ -40,6 +41,7 @@ class MaterialTransformer extends BaseTransformer
                     'type'        => $material->type,
                     'has_child'   => $material->has_child,
                     'category_id' => $material->category_id,
+                    'property'    => $material->property,
                 ];
         }
     }
