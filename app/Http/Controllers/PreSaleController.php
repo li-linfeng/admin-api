@@ -19,6 +19,7 @@ class PreSaleController extends Controller
         $filter['filter_display'] = 1;
 
         $paginator = SaleRequest::filter($filter)
+            ->whereIn('status', ['published', 'finish'])
             ->with(['user', 'handler', 'preSales.uploads'])
             ->withCount(['preSales'])
             ->paginate($request->input('per_page', 10));
@@ -29,7 +30,7 @@ class PreSaleController extends Controller
                     'pre_sale_id'   => $sal->id,
                     'product_name'  => $sal->product_name,
                     'category'      => $sal->category,
-                    'product_price' => $sal->product_price,
+                    'product_price' => formatMoney($sal->product_price),
                     'product_date'  => $sal->product_date,
                     'fileList'      => $sal->uploads->toArray(),
                 ];
@@ -77,7 +78,7 @@ class PreSaleController extends Controller
                         'handler_name'   => optional($item->handler)->username,
                         'product_name'   => $sale->product_name,
                         'category'       => $sale->category,
-                        'product_price'  => $sale->product_price,
+                        'product_price'  => formatMoney($sale->product_price),
                         'product_date'   => $sale->product_date,
                         'uploads'        => $sale->uploads->toArray(),
                         'is_start'       => $is_start,
