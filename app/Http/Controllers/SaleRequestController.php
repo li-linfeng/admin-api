@@ -36,12 +36,14 @@ class SaleRequestController extends Controller
         $data = $request->all();
         $project = Project::where('project_no', $request->project_no)->first();
         $data['user_id'] = auth('api')->id() ?: 0;
-        $types = is_array($request->product_type) ?  $request->product_type : implode(",", $request->product_type);
-        $data['handle_type'] = $types ? $request->product_type[0]: "";
+        $types = is_array($request->product_type) ?  implode(",", $request->product_type) :  $request->product_type;
+       
+        $data['handle_type'] = $types ? $types[0]: "";
         $data['product_type'] = $types ;
         $data['customer_name'] = $project ? $project->customer_name :"";
 
         $sale =  SaleRequest::create($data);
+
         $ids = explode(",", $request->upload_ids);
         Upload::whereIn('id',  $ids)->update(['source_id' => $sale->id]);
         return $this->response()->noContent();

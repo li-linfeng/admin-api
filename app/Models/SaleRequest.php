@@ -38,6 +38,9 @@ class SaleRequest extends Model
         "finish"    => "完成",
     ];
 
+  
+
+
     public function project()
     {
         return $this->hasOne(Project::class, 'project_no', 'project_no');
