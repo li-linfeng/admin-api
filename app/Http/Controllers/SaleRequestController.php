@@ -36,8 +36,8 @@ class SaleRequestController extends Controller
         $data = $request->all();
         $project = Project::where('project_no', $request->project_no)->first();
         $data['user_id'] = auth('api')->id() ?: 0;
-        $types = implode(",", $request->product_type);
-        $data['handle_type'] = $types ?$request->product_type[0]: "";
+        $types = is_array($request->product_type) ?  $request->product_type : implode(",", $request->product_type);
+        $data['handle_type'] = $types ? $request->product_type[0]: "";
         $data['product_type'] = $types ;
         $data['customer_name'] = $project ? $project->customer_name :"";
 
@@ -51,11 +51,11 @@ class SaleRequestController extends Controller
     {
         $this->canHandle($request);
         $params = $saleRqRequest->all();
-        $params['status'] = 'open';
-        $types = is_array($request->product_type) ?  $request->product_type : implode(",", $request->product_type);
+        $params['status'] = 'open';     
+        $types = is_array($saleRqRequest->product_type) ?  $saleRqRequest->product_type : implode(",", $saleRqRequest->product_type);
         $data['handle_type'] = $types ?$types[0]: "";
         $data['product_type'] = $types ;
-
+    
         $request->update( $params);
 
         Upload::where('source_type', 'sale_request')->where('source_id', $saleRqRequest->id)->update(['source_id' => 0]);
