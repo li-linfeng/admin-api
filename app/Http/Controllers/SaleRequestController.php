@@ -52,8 +52,8 @@ class SaleRequestController extends Controller
         $this->canHandle($request);
         $params = $saleRqRequest->all();
         $params['status'] = 'open';
-        $types = implode(",", $request->product_type);
-        $data['handle_type'] = $types ?$request->product_type[0]: "";
+        $types = is_array($request->product_type) ?  $request->product_type : implode(",", $request->product_type);
+        $data['handle_type'] = $types ?$types[0]: "";
         $data['product_type'] = $types ;
 
         $request->update( $params);
