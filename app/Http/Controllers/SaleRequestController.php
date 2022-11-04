@@ -39,14 +39,13 @@ class SaleRequestController extends Controller
             abort(422, "此项目编号不存在");
         }
         $data['user_id'] = auth('api')->id() ?: 0;
-        $types = is_array($request->product_type) ?  implode(",", $request->product_type) :  $request->product_type;
-       
-        $data['handle_type'] = $types ? $types[0]: "";
-        $data['product_type'] = $types ;
+  
+        $types_arr = is_array($request->product_type) ? $request->product_type : explode(",", $request->product_type); 
+        $data['handle_type'] = $types_arr[0];
+        $data['product_type'] =  implode(",", $types_arr) ;
         $data['customer_name'] = $project ? $project->customer_name :"";
 
         $sale =  SaleRequest::create($data);
-
         $ids = explode(",", $request->upload_ids);
         Upload::whereIn('id',  $ids)->update(['source_id' => $sale->id]);
         return $this->response()->noContent();
@@ -62,12 +61,13 @@ class SaleRequestController extends Controller
 
         $params = $saleRqRequest->all();
         $params['status'] = 'open';     
-        $types = is_array($saleRqRequest->product_type) ? implode(",", $saleRqRequest->product_type): $saleRqRequest->product_type ;
-        $data['handle_type'] = $types ?$types[0]: "";
-        $data['product_type'] = $types ;
 
-        $data['customer_name'] = $project ? $project->customer_name :"";
-    
+        $types_arr = is_array($saleRqRequest->product_type) ? $saleRqRequest->product_type :explode(",", $saleRqRequest->product_type); 
+        $params['handle_type'] = $types_arr[0];
+        $params['product_type'] =  implode(",", $types_arr) ;
+
+        $params['customer_name'] = $project ? $project->customer_name :"";
+
         $request->update( $params);
 
         Upload::where('source_type', 'sale_request')->where('source_id', $saleRqRequest->id)->update(['source_id' => 0]);
