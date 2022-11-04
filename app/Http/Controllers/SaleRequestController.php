@@ -35,6 +35,9 @@ class SaleRequestController extends Controller
     {
         $data = $request->all();
         $project = Project::where('project_no', $request->project_no)->first();
+        if(!$project){
+            abort(422, "此项目编号不存在");
+        }
         $data['user_id'] = auth('api')->id() ?: 0;
         $types = is_array($request->product_type) ?  $request->product_type : implode(",", $request->product_type);
         $data['handle_type'] = $types ? $request->product_type[0]: "";
@@ -50,11 +53,18 @@ class SaleRequestController extends Controller
     public function update(SaleRequest $request, SaleRqRequest $saleRqRequest)
     {
         $this->canHandle($request);
+        $project = Project::where('project_no', $request->project_no)->first();
+        if(!$project){
+            abort(422, "此项目编号不存在");
+        }
+
         $params = $saleRqRequest->all();
         $params['status'] = 'open';     
         $types = is_array($saleRqRequest->product_type) ?  $saleRqRequest->product_type : implode(",", $saleRqRequest->product_type);
         $data['handle_type'] = $types ?$types[0]: "";
         $data['product_type'] = $types ;
+        
+        $data['customer_name'] = $project ? $project->customer_name :"";
     
         $request->update( $params);
 
