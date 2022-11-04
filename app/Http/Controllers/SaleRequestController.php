@@ -62,10 +62,10 @@ class SaleRequestController extends Controller
 
         $params = $saleRqRequest->all();
         $params['status'] = 'open';     
-        $types = is_array($saleRqRequest->product_type) ?  $saleRqRequest->product_type : implode(",", $saleRqRequest->product_type);
+        $types = is_array($saleRqRequest->product_type) ? implode(",", $saleRqRequest->product_type): $saleRqRequest->product_type ;
         $data['handle_type'] = $types ?$types[0]: "";
         $data['product_type'] = $types ;
-        
+
         $data['customer_name'] = $project ? $project->customer_name :"";
     
         $request->update( $params);
