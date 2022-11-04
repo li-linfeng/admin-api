@@ -54,7 +54,7 @@ class SaleRequestController extends Controller
     public function update(SaleRequest $request, SaleRqRequest $saleRqRequest)
     {
         $this->canHandle($request);
-        $project = Project::where('project_no', $request->project_no)->first();
+        $project = Project::where('project_no', $saleRqRequest->project_no)->first();
         if(!$project){
             abort(422, "此项目编号不存在");
         }
