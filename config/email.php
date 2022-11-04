@@ -2,6 +2,6 @@
 
 return [
 	'to'=> 'customercare@hannept.com',
-	'cc'=> ['zemin.su@regalrexnord.com'],
+	'cc'=> ['yuan.meng@regalrexnord.com,jonathan.shi@regalrexnord.com,zemin.su@regalrexnord.com'],
 ];
 
